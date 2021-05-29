@@ -1,0 +1,12 @@
+{
+    "prefix":"",
+    "qq":{
+        "prefix":"/qqinfo"
+    },
+    "yiyan":{
+        "prefix":"/yiyan"
+    },
+    "ip":{
+        "prefix":"/ip"
+    }
+}
