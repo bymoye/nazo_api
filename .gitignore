@@ -1,2 +1,4 @@
 /sentences
 qqcache.db
+/modules/__pycache__
+/router/__pycache__
