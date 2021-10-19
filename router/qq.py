@@ -7,7 +7,7 @@ from modules.qqsql import qqcache
 router = APIRouter()
 qqcl = qqcache()
 @router.get("/{qqnum}",description="仅接受5-10位QQ号(且仅为数字)")
-async def get_qqinfo(qqnum: int = Path(..., ge=10000, le=10000000000)):
+async def get_qqinfo(qqnum: int = Path(...,ge=10000, le=10000000000)):
     cache_slc = qqcl._get_cache(qqnum,True)
     if cache_slc != 0:
             c = ast.literal_eval(cache_slc[1])

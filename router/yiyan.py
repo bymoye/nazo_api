@@ -6,7 +6,7 @@ from modules.yiyan_get import yiyan
 
 router = APIRouter()
 yy = yiyan()
-@router.get("/")
+@router.get("")
 async def yiy(t: Optional[List[str]] = Query(None), encode: str = None):
     # 判断是否有带参数
     if (t != None):
