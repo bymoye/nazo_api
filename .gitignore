@@ -1,7 +1,6 @@
-sentences/*
-router/__pycache__/*
-modules/__pycache__/*
-__pycache__/*
-src/*
-config.yaml
-cache.db
+.env
+__pycache__
+backup_db.db
+sentences
+GeoLite2-*
+ip2asn-*
