@@ -7,17 +7,20 @@ from modules.qq_todo import _qq
 from modules.yiyan_todo import _yiyan
 from modules.randimg_todo import randimg
 from dataclass import Get_ua_result,Ip_result,Qq_info,randimg_result
+from app.docs import UA_API_docs, ip_API_docs,docs, randimg_API_docs, yiyan_API_docs,QQ_API_docs
 router = Router()
 get = router.get
 add_get = router.add_get
 
-@get("/ip")
+@docs(ip_API_docs)
+@get("/ip/{str:ip}")
 async def Get_ip(ipinfo: _ip, ip: str) -> Ip_result|Response:
     try:
         return await ipinfo.GetIp(ip)
     except Exception as e:
         return bad_request(e.__str__())
 
+@docs(UA_API_docs)
 @get("/ua")
 async def Get_ua(request: Request,ip:ServerInfo,ipinfo: _ip) -> Get_ua_result|Response:
     header = dict([(bytes.decode(i),bytes.decode(j)) for i,j in request.headers])
@@ -30,6 +33,7 @@ async def Get_ua(request: Request,ip:ServerInfo,ipinfo: _ip) -> Get_ua_result|Re
 
 Route.value_patterns["qq"] = r"[0-9]{5,10}"
 
+@docs(QQ_API_docs)
 @get("/qq/{qq:qqnum}")
 async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Qq_info|Response:
     try:
@@ -37,6 +41,7 @@ async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Qq_info|Response:
     except Exception as e:
         return bad_request(e.__str__())
 
+@docs(randimg_API_docs)
 @get("/randimg")
 async def Randimg(request: Request,rdimg:randimg,encode:str = None,n: int = 1,type:str = 'pc') -> Response|randimg_result:
     ua = request.get_first_header(b'user-agent')
@@ -57,6 +62,8 @@ async def Randimg(request: Request,rdimg:randimg,encode:str = None,n: int = 1,ty
     except Exception as e:
         return bad_request(randimg_result(400,e.__str__()))
     
+
+@docs(yiyan_API_docs)
 @get('/yiyan')
 async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> Response:
     try:
