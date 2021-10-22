@@ -64,9 +64,9 @@ class sqlite:
     def Write_Qq_Table(self,qqnum:int,Result:Qq_info) -> None:
         sql = "INSERT OR REPLACE INTO qqcache VALUES (:qqnum , :Result , strftime('%s','now'))"
         with self.con as con:
-            con.execute(sql,{'qqnum':qqnum,'Result':Result.to_json()})
+            con.execute(sql,{'qqnum':qqnum,'Result':orjson.dumps(Result)})
 
     def Write_Ip_Table(self,IP:str,Result:Ip_info) -> None:
         sql = "INSERT OR REPLACE INTO ipcache VALUES (:IP , :Result , strftime('%s','now'))"
         with self.con as con:
-            con.execute(sql,{'IP':IP,'Result':Result.to_json()})
+            con.execute(sql,{'IP':IP,'Result':orjson.dumps(Result)})

@@ -10,13 +10,22 @@ Config = ApiConfig()
 # 初始化
 app = Application(router=router)
 docs.bind_app(app)
-
+app.use_cors(
+    allow_methods="*",
+    allow_origins="*",
+    allow_headers="*",
+    max_age=2592000,
+)
 def serialize(value) -> str:
     return orjson.dumps(value).decode("utf8")
 
+def pretty_json_dumps(obj):
+    return orjson.dumps(obj,option=orjson.OPT_INDENT_2).decode("utf8")
+
 json.use(
     loads = orjson.loads,
-    dumps = serialize
+    dumps = serialize,
+    pretty_dumps=pretty_json_dumps
     )
 
 @app.on_start
