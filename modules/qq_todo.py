@@ -7,7 +7,7 @@ class _qq:
         self.client , self.sql = client, sql
         
     async def Get_qqinfo(self,qqnum:int) -> Qq_info:
-        Qqinfo = self.sql.Query_Qq_Table(qqnum)
+        Qqinfo = await self.sql.Query_Qq_Table(qqnum)
         if Qqinfo:
             result = Qqinfo
         else:
@@ -17,7 +17,7 @@ class _qq:
                     ]
             assert (req[0] is not None and req[1] is not None),'请求错误'
             nickname_api = await req[0].text()
-            nickname_api = nickname_api.encode("windows-1252").decode('gbk')
+            nickname_api = nickname_api.encode("iso-8859-1").decode('GB18030')
             qqavatar_api = bytes.decode(req[1].get_headers(b"Location")[0])
             nickname_begin = r'portraitCallBack('
             jsonp_end = r')'
@@ -29,5 +29,5 @@ class _qq:
                             nickname[qqnum][6],
                             qqavatar_api
                         )
-            self.sql.Write_Qq_Table(int(qqnum),result)
+            await self.sql.Write_Qq_Table(int(qqnum),result)
         return result

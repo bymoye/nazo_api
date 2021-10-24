@@ -48,8 +48,8 @@ async def after_start(application: Application) -> None:
 
 @app.on_stop
 async def on_stop(app: Application) -> None:
-    await app.service_provider[httpclient].close()
     await app.service_provider[sql].close()
+    await app.service_provider[httpclient].close()
 
 
 if __name__ == '__main__':

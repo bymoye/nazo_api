@@ -33,9 +33,9 @@ IP接口备选方案使用 [高德开放平台](https://console.amap.com/dev/key
 一言库使用 [sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle)
 
 # 建议
-虽然可以直接使用 `uvicorn`，但是还是建议使用 `nginx-unit`
+虽然可以直接使用 `uvicorn`，但是还是建议使用 [nginx-unit](https://unit.nginx.org/installation/)
 
-因为`nginx-unit`的性能是高 如使用`nginx-unit`的话可以使用 `unit.config` 作为配置文件
+因为`nginx-unit`的性能高 如使用`nginx-unit`的话可以使用 `unit.config` 作为配置文件
 
 需要修改`path`和`working_directory`
 
@@ -53,11 +53,22 @@ make && make install
 make && make install
 ```
 
+# 已实现功能
++ QQ昵称/头像获取
++ 一言
++ IP定位
++ UA
++ 随机图
+
+
 # 待做
++ 为client做限制防止并发时带来的崩溃
 + bilibili_API
 + roconfiguration 替代 parse_it
 
 # 更新日志
+2021-10-24 修正QQAPI接口编码问题
+> 做了一个有趣的实验, 本来打算将sqlite3替换为 aiosqlite, 可是替换完成之后发现一个问题, 那就是aiosqlite的性能反而没有sqlite3的性能高.原因不明 所以做了回滚.
 2021-10-22 避免多余的开销
 2021-10-21 完善docs
 2021-10-20 完成程序的重构 放弃 FastApi ,拥抱 BlackSheep
