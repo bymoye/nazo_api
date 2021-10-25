@@ -43,6 +43,7 @@ async def before_start(app: Application) -> None:
 async def after_start(application: Application) -> None:
     provider = application.services.build_provider()
     yiyan = provider.get('_yiyan')
+    await app.service_provider[sql].init()
     await yiyan.init()
 
 
