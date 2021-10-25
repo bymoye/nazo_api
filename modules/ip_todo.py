@@ -10,6 +10,7 @@ class _ip:
         self.reader_ASN_v4 = ip2asn.IP2ASN("./src/ip2asn-v4-u32.tsv")
         self.reader_ASN_v6 = ip2asn.IP2ASN("./src/ip2asn-v6.tsv",ipversion=6)
         self.client,self.sqlite,self.key = client,sql,key
+        self.flag={}
         
         
     async def GetIp(self,ip:str) -> Ip_result:
@@ -31,6 +32,10 @@ class _ip:
         except:
             ipinfo = self.sqlite.Query_Ip_Table(ip)
             if ipinfo is False:
+                if self.flag.get(ip) is None:
+                    self.flag[ip] = 1
+                else:
+                    raise Exception('当前IP正在获取,请勿重复请求')
                 req = await self.client.get(f"https://restapi.amap.com/v5/ip?type={ip_type}&ip={ip}&key={self.key}")
                 assert (req is not None),'请求错误'
                 res = await req.json()
@@ -43,4 +48,5 @@ class _ip:
                                 asn[-1] if asn is not None else ''
                             )
                 self.sqlite.Write_Ip_Table(ip,ipinfo)
+                self.flag.pop(ip)
         return Ip_result(ip,ipinfo,code)

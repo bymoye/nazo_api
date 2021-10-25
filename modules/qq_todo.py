@@ -5,6 +5,7 @@ import orjson
 class _qq:
     def __init__(self,client:ClientSession,sql:sqlite) -> None:
         self.client , self.sql = client, sql
+        self.flag = {}
         
     async def Get_qqinfo(self,qqnum:int) -> Qq_info:
         Qqinfo = self.sql.Query_Qq_Table(qqnum)
@@ -12,6 +13,10 @@ class _qq:
             result = Qqinfo
         else:
             qqnum = str(qqnum)
+            if self.flag.get(qqnum) is None:
+                self.flag[qqnum] = 1
+            else:
+                raise Exception('当前QQ正在获取,请勿重复请求')
             req = [await self.client.get("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?g_tk=1518561325&uins="+qqnum),
                     await self.client.get("https://s.p.qq.com/pub/get_face?img_type=5&uin="+qqnum)
                     ]
@@ -30,4 +35,5 @@ class _qq:
                             qqavatar_api
                         )
             self.sql.Write_Qq_Table(int(qqnum),result)
+            self.flag.pop(qqnum)
         return result

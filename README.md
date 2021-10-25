@@ -62,7 +62,7 @@ make && make install
 
 
 # 待做
-+ 为client做限制防止并发时带来的崩溃
+- [x] 为client做限制防止并发时带来的崩溃
 + bilibili_API
 + roconfiguration 替代 parse_it
 
