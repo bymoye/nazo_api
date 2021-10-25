@@ -7,7 +7,7 @@ class _qq:
         self.client , self.sql = client, sql
         
     async def Get_qqinfo(self,qqnum:int) -> Qq_info:
-        Qqinfo = await self.sql.Query_Qq_Table(qqnum)
+        Qqinfo = self.sql.Query_Qq_Table(qqnum)
         if Qqinfo:
             result = Qqinfo
         else:
@@ -29,5 +29,5 @@ class _qq:
                             nickname[qqnum][6],
                             qqavatar_api
                         )
-            await self.sql.Write_Qq_Table(int(qqnum),result)
+            self.sql.Write_Qq_Table(int(qqnum),result)
         return result

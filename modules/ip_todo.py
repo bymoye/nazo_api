@@ -29,7 +29,7 @@ class _ip:
                             asn[-1] if asn is not None else ''
                         )
         except:
-            ipinfo = await self.sqlite.Query_Ip_Table(ip)
+            ipinfo = self.sqlite.Query_Ip_Table(ip)
             if ipinfo is False:
                 req = await self.client.get(f"https://restapi.amap.com/v5/ip?type={ip_type}&ip={ip}&key={self.key}")
                 assert (req is not None),'请求错误'
@@ -42,5 +42,5 @@ class _ip:
                                 asn[2] if asn is not None else 0,
                                 asn[-1] if asn is not None else ''
                             )
-                await self.sqlite.Write_Ip_Table(ip,ipinfo)
+                self.sqlite.Write_Ip_Table(ip,ipinfo)
         return Ip_result(ip,ipinfo,code)

@@ -12,10 +12,10 @@ class sqlite:
         self.Create_IP_Table()
         self.Create_QQ_Table()
 
-    async def close(self) -> None:
+    def close(self) -> None:
         with sqlite3.connect('backup_db.db') as db:
-            await self.con.backup(db)
-            await self.con.close()
+            self.con.backup(db)
+        self.con.close()
 
     def Create_IP_Table(self) -> None:
         try:
