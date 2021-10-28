@@ -1,14 +1,13 @@
 from blacksheep.client import ClientSession
 from blacksheep.server import Application
 from modules import ip_todo,sql_todo,qq_todo,randimg_todo,yiyan_todo
-from app import docs,router
-from dataclass import sql,httpclient
+from app import docs,service,router
+from dataclass import sql,httpclient,config
 import orjson
 from blacksheep.plugins import json
-from config import ApiConfig
-Config = ApiConfig()
 # 初始化
-app = Application(router=router)
+app = Application(router=router,services=service)
+
 docs.bind_app(app)
 app.use_cors(
     allow_methods="*",
@@ -35,13 +34,13 @@ async def before_start(app: Application) -> None:
     app.services.add_instance(sql_todo.sqlite(), declared_class=sql)
     provider = app.services.build_provider()
     app.services.add_instance(qq_todo._qq(http_client,provider.get(sql)))
-    app.services.add_instance(ip_todo._ip(http_client, Config.ip_key ,provider.get(sql)))
+    app.services.add_instance(ip_todo._ip(http_client, '' ,provider.get(sql)))
     app.services.add_instance(yiyan_todo._yiyan(http_client))
     app.services.add_instance(randimg_todo.randimg())
 
 @app.after_start
-async def after_start(application: Application) -> None:
-    provider = application.services.build_provider()
+async def after_start(app: Application) -> None:
+    provider = app.services.build_provider()
     yiyan = provider.get('_yiyan')
     await yiyan.init()
 
@@ -54,4 +53,5 @@ async def on_stop(app: Application) -> None:
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app=app, port = Config.port ,limit_concurrency=500)
+    Config = app.services.build_provider().get(config).config._global
+    uvicorn.run(app=app, port = Config['port'] ,limit_concurrency=500)

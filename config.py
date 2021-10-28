@@ -1,11 +1,35 @@
-from typing import Any
-from parse_it import ParseIt
+from dataclasses import dataclass
+import yaml
+
+@dataclass
+class Global:
+    port: int = 8000
+
+@dataclass
+class ty:
+    enable: bool = False
+
+@dataclass
+class ip(ty):
+    key: str = None
+    
+@dataclass
+class Module:
+    qq: ty
+    yiyan: ty
+    ip: ip
+    randimg: ty
+    ua: ty
+    
+
+@dataclass
+class _ApiConfig:
+    _global: Global
+    module: Module
+
 
 class ApiConfig:
     def __init__(self) -> None:
-        self.parser = ParseIt(config_type_priority=['env'])
-        self.port: int = self.get_Config('port', 8000, [int])
-        self.ip_key: str = self.get_Config('ip_key', 'test', [str])
-
-    def get_Config(self,name: str, default, allowed: list = None):
-        return self.parser.read_configuration_variable(name, default_value=default, allowed_types=allowed)
+        with open('config.yaml', mode='r',encoding="UTF-8") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+        self.config:dict = _ApiConfig(**config)

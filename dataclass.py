@@ -37,3 +37,5 @@ class sql(ABC):
 class httpclient(ABC):
     pass
 
+class config(ABC):
+    pass

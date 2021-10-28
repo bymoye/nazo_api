@@ -4,3 +4,4 @@ backup_db.db
 sentences
 GeoLite2-*
 ip2asn-*
+config.yaml

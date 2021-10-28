@@ -11,7 +11,12 @@ class _ip:
         self.reader_ASN_v6 = ip2asn.IP2ASN("./src/ip2asn-v6.tsv",ipversion=6)
         self.client,self.sqlite,self.key = client,sql,key
         self.flag={}
-        
+    
+    def Error(self,msg:str,ip:str|None,clear: bool = False) -> None:
+        if clear:
+            self.flag.pop(ip)
+        raise Exception(msg)
+    
         
     async def GetIp(self,ip:str) -> Ip_result:
         try:
@@ -37,9 +42,11 @@ class _ip:
                 else:
                     raise Exception('当前IP正在获取,请勿重复请求')
                 req = await self.client.get(f"https://restapi.amap.com/v5/ip?type={ip_type}&ip={ip}&key={self.key}")
-                assert (req is not None),'请求错误'
+                if req is None:
+                    self.Error('请求错误',ip,True)
                 res = await req.json()
-                assert (res['status'] == '1'),'接口错误,请检查key'
+                if res['status'] != '1':
+                    self.Error('接口错误,请检查key',ip,True)
                 ipinfo = Ip_info(
                                 res['country'],
                                 res['province'],
