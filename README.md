@@ -74,6 +74,7 @@ make && make install
  那就是`aiosqlite`的性能反而没有`sqlite3`的性能高.
  原因不明 所以做了回滚. 目前还是使用`sqlite3`
 
++ 2021-11-03 完善docs
 + 2021-10-22 避免多余的开销
 + 2021-10-21 完善docs
 + 2021-10-20 完成程序的重构 放弃 FastApi ,拥抱 BlackSheep
