@@ -1,5 +1,7 @@
+from blacksheep import Content, Request, Response
 from blacksheep.client import ClientSession
 from blacksheep.server import Application
+from modules.rand import randimg
 from modules import ip_todo,sql_todo,qq_todo,randimg_todo,yiyan_todo
 from app import docs,service,router
 from dataclass import sql,httpclient,config
@@ -23,6 +25,17 @@ def serialize(value) -> str:
 def pretty_json_dumps(obj):
     return orjson.dumps(obj,option=orjson.OPT_INDENT_2).decode("utf8")
 
+async def handler_error(request: Request, exc: Exception) -> Response:
+    return Response(
+            status = 500,
+            content = Content(
+                b"application/json",
+                orjson.dumps({'status':500,'error':f'{exc}'})
+                )
+            )
+
+app.handle_internal_server_error = handler_error
+
 json.use(
     loads = orjson.loads,
     dumps = serialize,
@@ -38,7 +51,7 @@ async def before_start(app: Application) -> None:
     app.services.add_instance(qq_todo._qq(http_client,provider.get(sql)))
     app.services.add_instance(ip_todo._ip(http_client, Config.module['ip']['key'] ,provider.get(sql)))
     app.services.add_instance(yiyan_todo._yiyan(http_client))
-    app.services.add_instance(randimg_todo.randimg())
+    app.services.add_instance(randimg.Randimg())
 
 @app.after_start
 async def after_start(app: Application) -> None:

@@ -5,7 +5,7 @@ from blacksheep.server.responses import redirect, html, bad_request,not_found
 from modules.ip_todo import _ip
 from modules.qq_todo import _qq
 from modules.yiyan_todo import _yiyan
-from modules.randimg_todo import randimg
+from modules.rand.randimg import Randimg as rdimg
 from dataclass import Get_ua_result,Ip_result,Qq_info,randimg_result,config
 from app.docs import UA_API_docs, ip_API_docs,docs, randimg_API_docs, yiyan_API_docs,QQ_API_docs
 from app.jsonres import json,pretty_json
@@ -21,6 +21,11 @@ def fallback() -> Response:
     return json(status=404,data={"msg":"这里不是你该来的地方"})
 router.fallback = fallback
 
+@docs.ignore()
+@get("/")
+async def index():
+    return redirect("/docs")
+
 @docs(ip_API_docs)
 async def Get_ip(ipinfo: _ip, ip: str) -> Response:
     try:
@@ -32,44 +37,30 @@ async def Get_ip(ipinfo: _ip, ip: str) -> Response:
 async def Get_ua(request: Request,ip:ServerInfo,ipinfo: _ip) -> Response:
     header = dict([(bytes.decode(i),bytes.decode(j)) for i,j in request.headers])
     ip = header['x-real-ip'] if "x-real-ip" in header.keys() else ip.value[0]
-    try:
-        _ipinfo = await ipinfo.GetIp(ip)
-    except Exception as e:
-        return bad_request(e.__str__())
+    _ipinfo = await ipinfo.GetIp(ip)
     return json(Get_ua_result(ip,header,_ipinfo.data))
 
 
 @docs(QQ_API_docs)
 async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Response:
-    try:
-        assert 10000 < qqnum < 9999999999,'qq号码错误'
-        return json(await Qqinfo.Get_qqinfo(qqnum))
-    except Exception as e:
-        return not_found(e.__str__())
+    if qqnum < 10000 or qqnum > 9999999999:
+        return not_found('qq号码错误')
+    return json(await Qqinfo.Get_qqinfo(qqnum))
 
 @docs(randimg_API_docs)
-async def Randimg(request: Request,rdimg:randimg,encode:str = None,n: int = 1,type:str = 'pc') -> Response:
+async def Randimg(request: Request,rdimg:rdimg,encode:str = None,number: int = 1,method:str = 'pc',form:str = None) -> Response:
     ua = request.get_first_header(b'user-agent')
-    try:
-        assert (ua is not None and encode in ['json',None] and type in ['pc','mobile']),'请检查参数'
-        assert (n <= 10),'请求数量超过上限'
-        ua = bytes.decode(ua)
-        _format = '!q80.webp' if rdimg.check_Version(ua) else '!q80.jpeg'
-        match [encode,type]:
-            case [None,'pc']:
-                return redirect(rdimg.pc() + _format)
-            case [None,'moblie']:
-                return redirect(rdimg.mb() + _format)
-            case ['json','pc']:
-                return json(randimg_result(200,rdimg.more_pc(n,_format)))
-            case ['json','mobile']:
-                return json(randimg_result(200,rdimg.more_mb(n,_format)))
-    except Exception as e:
-        return bad_request(randimg_result(400,e.__str__()))
+    # try:
+    assert (ua is not None and encode in ['json',None] and method in ['pc','mobile'] and form in ['webp','jpeg',None]),'请检查参数'
+    assert (number <= 10),'请求数量超过上限'
+    if encode:
+        return json(randimg_result(200,rdimg.process(ua,encode,number,method,form)))
+    return redirect(rdimg.process(ua,encode,number,method,form))
 
 
 @docs(yiyan_API_docs)
 async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> Response:
+
     try:
         assert c is not None
         t = request.query.get('c')

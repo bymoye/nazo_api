@@ -5,3 +5,4 @@ sentences
 GeoLite2-*
 ip2asn-*
 config.yaml
+build_cython
