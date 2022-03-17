@@ -16,10 +16,11 @@ get = router.get
 add_get = router.add_get
 Config:_ApiConfig = service.build_provider().get(config).config.module
 
-
+# 未定义路由
 def fallback() -> Response:
     return json(status=404,data={"msg":"这里不是你该来的地方"})
 router.fallback = fallback
+
 
 @docs.ignore()
 @get("/")

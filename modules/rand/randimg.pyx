@@ -7,6 +7,7 @@ from cython.operator cimport dereference, preincrement
 #include './nazorand.pyx'
 from .nazorand cimport randbelow
 cimport cython
+import sys
 cdef class Randimg:
     cdef int imgpc_total,imgmb_total
     cdef list imgpc
@@ -20,7 +21,8 @@ cdef class Randimg:
         cdef char[5] ua_version
         cdef int i1 = 0
         cdef int index
-        memset(ua_version,0,strlen(ua_version))
+        memset(ua_version,0,5)
+        print(ua_version)
         while it != end:
             key = dereference(it).first
             value = dereference(it).second
@@ -34,7 +36,7 @@ cdef class Randimg:
                 i1 += 1
             if atoi(ua_version) >= value:
                 return True
-            memset(ua_version,0,strlen(ua_version));
+            memset(ua_version,0,5);
             preincrement(it)
 
     cdef int strindex(self,char* a,char* b) nogil:
@@ -49,15 +51,15 @@ cdef class Randimg:
 
     cdef str pc(self):
         return self.imgpc[randbelow(self.imgpc_total)]
-    cdef str mb(self):
+    cdef str moblie(self):
         return self.imgmb[randbelow(self.imgmb_total)]
 
-    cdef list more_pc(self,int n,str imgFormat):
+    cdef list morePc(self,int n,str imgFormat):
         cdef int i
         cdef list r = [self.imgpc[randbelow(self.imgpc_total)] + imgFormat for i in range(n)]
         return r
 
-    cdef list more_mb(self,int n,str imgFormat):
+    cdef list moreMoblie(self,int n,str imgFormat):
         cdef int i
         cdef list r = [self.imgmb[randbelow(self.imgmb_total)] + imgFormat for i in range(n)]
         return r
@@ -67,11 +69,11 @@ cdef class Randimg:
         imgFormat = '!q80.' + (form if form else ('webp' if self.check_Version(ua) else 'jpeg'))
         if encode is None:
             if method == 'moblie':
-                return self.mb() + imgFormat
+                return self.Moblie() + imgFormat
             return self.pc() + imgFormat
         if method == 'moblie':
-            return self.more_mb(n,imgFormat)
-        return self.more_pc(n,imgFormat)
+            return self.moreMoblie(n,imgFormat)
+        return self.morePc(n,imgFormat)
     
     def __cinit__(self):
         with open("./src/img_url_pc.txt") as pc:
