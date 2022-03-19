@@ -64,13 +64,17 @@ cdef class Randimg:
         cdef list r = [self.imgmb[randbelow(self.imgmb_total)] + imgFormat for i in range(n)]
         return r
     
-    def process(self,ua:bytes,encode:str|bool,n:int,method:str,form:str) -> str|list:
+    def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
         cdef str imgFormat
-        imgFormat = '!q80.' + (form if form else ('webp' if self.check_Version(ua) else 'jpeg'))
+        imgFormat = '!q80.' + ('webp' if self.check_Version(ua) else 'jpeg')
         if encode is None:
             if method == 'moblie':
                 return self.Moblie() + imgFormat
             return self.pc() + imgFormat
+        if n > 10:
+            n = 10
+        if n < 1:
+            n = 1
         if method == 'moblie':
             return self.moreMoblie(n,imgFormat)
         return self.morePc(n,imgFormat)

@@ -49,14 +49,14 @@ async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Response:
     return json(await Qqinfo.Get_qqinfo(qqnum))
 
 @docs(randimg_API_docs)
-async def Randimg(request: Request,rdimg:rdimg,encode:str = None,number: int = 1,method:str = 'pc',form:str = None) -> Response:
+async def Randimg(request: Request,rdimg:rdimg,encode:str = None,number: int = 1,method:str = 'pc') -> Response:
     ua = request.get_first_header(b'user-agent')
     # try:
-    assert (ua is not None and encode in ['json',None] and method in ['pc','mobile'] and form in ['webp','jpeg',None]),'请检查参数'
-    assert (number <= 10),'请求数量超过上限'
+    if encode not in ['json',None]:
+        encode = None
     if encode:
-        return json(randimg_result(200,rdimg.process(ua,encode,number,method,form)))
-    return redirect(rdimg.process(ua,encode,number,method,form))
+        return json(randimg_result(200,rdimg.process(ua,encode,number,method)))
+    return redirect(rdimg.process(ua,encode,number,method))
 
 
 @docs(yiyan_API_docs)
