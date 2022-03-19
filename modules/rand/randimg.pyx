@@ -2,50 +2,51 @@
 # distutils: language = c++
 from libc.string cimport strstr,strlen,memset
 from libc.stdlib cimport atoi,rand,srand
-from libcpp.map cimport map
+from libcpp.unordered_map cimport unordered_map
 from cython.operator cimport dereference, preincrement
 #include './nazorand.pyx'
 from .nazorand cimport randbelow
 cimport cython
-import sys
 cdef class Randimg:
     cdef int imgpc_total,imgmb_total
     cdef list imgpc
     cdef list imgmb
-    cdef map[char*, int] version_list_c
+    cdef unordered_map[char*, int] version_list_c
     cdef bint check_Version(self,char* ua) nogil:
-        cdef map[char*,int].iterator end = self.version_list_c.end()
-        cdef map[char*,int].iterator it = self.version_list_c.begin()
+        cdef unordered_map[char*,int].iterator end = self.version_list_c.end()
+        cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()
         cdef char* key
         cdef int value
-        cdef char[5] ua_version
-        cdef int i1 = 0
-        cdef int index
-        memset(ua_version,0,5)
-        print(ua_version)
+        cdef char[5] uaVersion
+        cdef int uaVersionIndex = 0
+        cdef int uaIndex
+        memset(uaVersion,0,5)
         while it != end:
-            key = dereference(it).first
-            value = dereference(it).second
-            index = self.strindex(ua, dereference(it).first)
-            if index == -1:
+            derefe = dereference(it)
+            key = derefe.first
+            value = derefe.second
+            uaIndex = self.strindex(ua, key)
+            if uaIndex == -1:
+                # 如果不存在该UA就跳转到下一个
                 preincrement(it)
                 continue
-            i1 = index+strlen(key) + 1
-            while b'0' <= ua[i1] <= b'9':
-                ua_version[strlen(ua_version)] = ua[i1]
-                i1 += 1
-            if atoi(ua_version) >= value:
+            uaVersionIndex = uaIndex + strlen(key) + 1
+            while b'0' <= ua[uaVersionIndex] <= b'9':
+            # while ua[uaVersionIndex].isdigit():
+                uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]
+                uaVersionIndex += 1
+            if atoi(uaVersion) >= value:
                 return True
-            memset(ua_version,0,5);
+            memset(uaVersion,0,5)
             preincrement(it)
 
     cdef int strindex(self,char* a,char* b) nogil:
         cdef int n = 0
-        cdef int len = strlen(a)
+        cdef int aLen = strlen(a)
         cdef int result = -1
-        if len > 0:
+        if aLen > 0:
             result = strstr(a, b) - a
-        if 0 <= result <= len:
+        if 0 <= result <= aLen:
             return result
         return -1
 
@@ -95,5 +96,7 @@ cdef class Randimg:
                             b'SamsungBrowser':4,
                             b'QQBrowser':10,
                         }
-        self.version_list_c = version_list
-        version_list = None
+        for k ,v in version_list.iteritems():
+            self.version_list_c[k] = v
+        version_list.clear()
+        del version_list
