@@ -1,3 +1,4 @@
+from blacksheep import Content
 from blacksheep.messages import Request, Response
 from blacksheep.server.bindings import ServerInfo
 from blacksheep.server.routing import Router
@@ -37,7 +38,7 @@ async def Get_ip(ipinfo: _ip, ip: str) -> Response:
 @docs(UA_API_docs)
 async def Get_ua(request: Request,ip:ServerInfo,ipinfo: _ip) -> Response:
     header = dict([(bytes.decode(i),bytes.decode(j)) for i,j in request.headers])
-    ip = header['x-real-ip'] if "x-real-ip" in header.keys() else ip.value[0]
+    ip = header.get("x-real-ip", ip.value[0])
     _ipinfo = await ipinfo.GetIp(ip)
     return json(Get_ua_result(ip,header,_ipinfo.data))
 
@@ -55,8 +56,9 @@ async def Randimg(request: Request,rdimg:rdimg,encode:str = None,number: int = 1
     if encode not in ['json',None]:
         encode = None
     if encode:
-        return json(randimg_result(200,rdimg.process(ua,encode,number,method)))
-    return redirect(rdimg.process(ua,encode,number,method))
+        return json({'code': 200,'url':rdimg.process(ua,encode,number,method)})
+    print(rdimg.process(ua,encode,number,method))
+    return Response(302, [(b"Location", rdimg.process(ua,encode,number,method))])
 
 
 @docs(yiyan_API_docs)
@@ -70,10 +72,7 @@ async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> R
         result = yy.cut_get_yiyan(slist)
     except:
         result = yy.get_yiyan()
-    if encode == 'text':
-        return html(str(result))
-    else:
-        return pretty_json(result)
+    return html(str(result)) if encode == 'text' else pretty_json(result)
 
 if Config['qq']['enable']:
     add_get("/qq/{qqnum}",Get_Qq)

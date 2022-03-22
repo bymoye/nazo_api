@@ -13,8 +13,7 @@ class _qq:
         raise Exception(msg)
     
     async def Get_qqinfo(self,qqnum:int) -> Qq_info:
-        Qqinfo = self.sql.Query_Qq_Table(qqnum)
-        if Qqinfo:
+        if Qqinfo := self.sql.Query_Qq_Table(qqnum):
             result = Qqinfo
         else:
             qqnum = str(qqnum)

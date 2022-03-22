@@ -22,7 +22,7 @@ class _ip:
         try:
             ip_type = ipaddress.ip_address(ip).version
         except:
-            raise Exception('IP地址不合法')
+            raise ValueError('IP地址不合法')
         asn = self.reader_ASN_v4.lookup_address_row(ip) if ip_type == 4 else self.reader_ASN_v6.lookup_address_row(ip)
         code = 0
         try:

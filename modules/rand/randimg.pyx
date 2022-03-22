@@ -3,15 +3,34 @@
 from libc.string cimport strstr,strlen,memset
 from libc.stdlib cimport atoi,rand,srand
 from libcpp.unordered_map cimport unordered_map
+from libcpp.unordered_set cimport unordered_set
 from cython.operator cimport dereference, preincrement
+from libcpp.vector cimport vector
+from libcpp.string cimport string
 #include './nazorand.pyx'
 from .nazorand cimport randbelow
+import json
 cimport cython
+ctypedef fused str_or_bool:
+    str
+    bint
+ctypedef fused string_or_list:
+    string
+    list
+cdef:
+    string URLWEBP = string(b'webp')
+    string PREURL = string(b'https://file.nmxc.ltd/')
+    string URLJPEG = string(b'jpeg')
+    string SOURCE = string(b'.source.')
+    string SLASH = string(b'/')
+    str MOBILE = 'mobile'
 cdef class Randimg:
-    cdef int imgpc_total,imgmb_total
-    cdef list imgpc
-    cdef list imgmb
-    cdef unordered_map[char*, int] version_list_c
+    cdef:
+        int imgpc_total,imgmb_total
+        vector[string] imgpc
+        vector[string] imgmb
+        unordered_map[char*, int] version_list_c
+
     cdef bint check_Version(self,char* ua) nogil:
         cdef unordered_map[char*,int].iterator end = self.version_list_c.end()
         cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()
@@ -50,43 +69,47 @@ cdef class Randimg:
             return result
         return -1
 
-    cdef str pc(self):
+    cdef string pc(self):
         return self.imgpc[randbelow(self.imgpc_total)]
-    cdef str moblie(self):
+    cdef string moblie(self):
         return self.imgmb[randbelow(self.imgmb_total)]
 
-    cdef list morePc(self,int n,str imgFormat):
+    cdef list morePc(self,int n,string imgFormat):
         cdef int i
-        cdef list r = [self.imgpc[randbelow(self.imgpc_total)] + imgFormat for i in range(n)]
-        return r
+        return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
 
-    cdef list moreMoblie(self,int n,str imgFormat):
+    cdef list moreMoblie(self,int n,string imgFormat):
         cdef int i
-        cdef list r = [self.imgmb[randbelow(self.imgmb_total)] + imgFormat for i in range(n)]
-        return r
+        return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
     
-    def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
-        cdef str imgFormat
-        imgFormat = '!q80.' + ('webp' if self.check_Version(ua) else 'jpeg')
+    cpdef process(self,bytes ua,encode,int n,str method):
+    #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
+        cdef string imgFormat
+        imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
         if encode is None:
-            if method == 'moblie':
-                return self.Moblie() + imgFormat
-            return self.pc() + imgFormat
+            if method == MOBILE:
+                return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
+            return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
         if n > 10:
             n = 10
         if n < 1:
             n = 1
-        if method == 'moblie':
-            return self.moreMoblie(n,imgFormat)
+        if method == MOBILE:
+         return self.moreMoblie(n,imgFormat)
         return self.morePc(n,imgFormat)
     
     def __cinit__(self):
-        with open("./src/img_url_pc.txt") as pc:
-            self.imgpc = pc.read().split()
-            self.imgpc_total = len(self.imgpc)
-        with open("./src/img_url_mb.txt") as mb:
-            self.imgmb = mb.read().split()
-            self.imgmb_total = len(self.imgmb)
+        with open("./src/manifest.json") as pc:
+            temp = json.load(pc)
+            for i in temp.keys():
+                self.imgpc.push_back(i.encode('UTF-8'))
+            self.imgpc_total = self.imgpc.size()
+        with open("./src/manifest_mobile.json") as mb:
+            temp = json.load(mb)
+            for i in temp.keys():
+                self.imgmb.push_back(i.encode('UTF-8'))
+            self.imgmb_total = self.imgmb.size()
+
         version_list = {b'Firefox':65,
                             b'Chrome':32,
                             b'Edge':18,
