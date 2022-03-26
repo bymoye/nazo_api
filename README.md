@@ -64,9 +64,12 @@ make && make install
 # 待做
 - [x] 为client做限制防止并发时带来的崩溃
 + bilibili_API
++ 重写ip2asn
 - [x] yaml 替代 parse_it
 
 # 更新日志
+
++ 2022-03-22 重写随机图模块
 + 2021-10-28 完善Config
 + 2021-10-24 修正QQAPI接口编码问题
 > 做了一个有趣的实验, 将`sqlite3`替换为 `aiosqlite`.
