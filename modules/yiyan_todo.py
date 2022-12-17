@@ -1,12 +1,11 @@
-import os, orjson
+import os, orjson, httpx
 from blacksheep.client import ClientSession
 from modules.rand import nazorand
 
 
 class Hitokoto:
-    def __init__(self, client: ClientSession):
+    def __init__(self):
         self.type_cont, self.type_cont_len = {}, {}
-        self.client = client
 
     async def init(self):
         print("初始化一言")
@@ -18,25 +17,24 @@ class Hitokoto:
 
     async def download_yiyan(self) -> None:
         print("从jsdelivr下载一言库")
-        hitokoto_list = await self.client.get(
-            "https://cdn.jsdelivr.net/gh/hitokoto-osc/sentences-bundle@latest/categories.json"
-        )
-        assert hitokoto_list is not None, "请求错误"
-        tm = await hitokoto_list.json()
-        hitokoto_begin = (
-            "https://cdn.jsdelivr.net/gh/hitokoto-osc/sentences-bundle/sentences/"
-        )
-        hitokoto = [
-            await j.json()
-            for j in [
-                await self.client.get(hitokoto_begin + i["key"] + ".json") for i in tm
+        async with httpx.AsyncClient(
+            base_url="https://cdn.jsdelivr.net/gh/hitokoto-osc/sentences-bundle@latest/"
+        ) as client:
+            r = await client.get("categories.json")
+            assert r.status_code == 200
+            hitokoto_list = r.json()
+            hitokoto = [
+                j.json()
+                for j in [
+                    await client.get(f"sentences/{i['key']}.json")
+                    for i in hitokoto_list
+                ]
             ]
-        ]
-        for n in range(len(tm)):
-            with open("./sentences/" + tm[n]["key"] + ".json", mode="wb") as f:
+        for n in range(len(hitokoto_list)):
+            with open(f"./sentences/{hitokoto_list[n]['key']}.json", mode="wb") as f:
                 f.write(orjson.dumps(hitokoto[n]))
         with open("./sentences/all.json", mode="wb") as f:
-            f.write(orjson.dumps(tm))
+            f.write(orjson.dumps(hitokoto_list))
         print("下载完成")
 
     def load(self) -> None:
