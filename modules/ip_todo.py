@@ -1,19 +1,18 @@
 import geoip2.database
 from maxminddb import MODE_MMAP_EXT
 from dataclass import Ip_result, Ip_info
-from blacksheep.client import ClientSession
 from modules.asn.ip2asn import IpToAsn
 import ipaddress
 from modules.sql_todo import SelfSqlite
 
 
 class IpUtils:
-    def __init__(self, client: ClientSession, key: str, sql: SelfSqlite) -> None:
+    def __init__(self, key: str, sql: SelfSqlite) -> None:
         self.reader_City = geoip2.database.Reader(
             "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
         )
         self.reader_ASN = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
-        self.client, self.sqlite, self.key = client, sql, key
+        self.sqlite, self.key = sql, key
         self.flag = {}
 
     def Error(self, msg: str, ip: str | None, clear: bool = False) -> None:

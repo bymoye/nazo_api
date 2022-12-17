@@ -53,9 +53,9 @@ async def before_start(app: Application) -> None:
     provider = app.services.build_provider()
     app.services.add_instance(qq_todo.QQUtils(http_client, provider.get(sql)))
     app.services.add_instance(
-        ip_todo.IpUtils(http_client, Config.module["ip"]["key"], provider.get(sql))
+        ip_todo.IpUtils(Config.module["ip"]["key"], provider.get(sql))
     )
-    app.services.add_instance(yiyan_todo.Hitokoto(http_client))
+    app.services.add_instance(yiyan_todo.Hitokoto())
     app.services.add_instance(randimg.Randimg())
 
 
