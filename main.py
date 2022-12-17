@@ -51,13 +51,13 @@ async def before_start(app: Application) -> None:
     provider = app.services.build_provider()
     app.services.add_instance(qq_todo._qq(http_client,provider.get(sql)))
     app.services.add_instance(ip_todo.Ip(http_client, Config.module['ip']['key'] ,provider.get(sql)))
-    app.services.add_instance(yiyan_todo._yiyan(http_client))
+    app.services.add_instance(yiyan_todo.Hitokoto(http_client))
     app.services.add_instance(randimg.Randimg())
 # 生命周期：启动后
 @app.after_start
 async def after_start(app: Application) -> None:
     provider = app.services.build_provider()
-    yiyan:yiyan_todo._yiyan = provider.get('_yiyan')
+    yiyan:yiyan_todo.Hitokoto = provider.get('Hitokoto')
     await yiyan.init()
 
 # 生命周期：停止时

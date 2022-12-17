@@ -1,7 +1,7 @@
-from blacksheep.client import ClientSession
 import os,orjson
+from blacksheep.client import ClientSession
 from modules.rand import nazorand 
-class _yiyan:
+class Hitokoto:
     def __init__(self,client:ClientSession):
         self.type_cont,self.type_cont_len = {},{}
         self.client = client

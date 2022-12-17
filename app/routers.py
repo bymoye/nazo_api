@@ -6,7 +6,7 @@ from blacksheep.server.responses import redirect, html, bad_request,not_found
 import orjson
 from modules.ip_todo import Ip
 from modules.qq_todo import _qq
-from modules.yiyan_todo import _yiyan
+from modules.yiyan_todo import Hitokoto
 from modules.rand.randimg import Randimg as rdimg
 from dataclass import Get_ua_result,Ip_result,Qq_info,randimg_result,config
 from app.docs import UA_API_docs, ip_API_docs,docs, randimg_API_docs, yiyan_API_docs,QQ_API_docs
@@ -66,7 +66,7 @@ async def randImg(request: Request,rdimg:rdimg,method:str = 'pc',encode:str = No
 
 
 @docs(yiyan_API_docs)
-async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> Response:
+async def yiyan(request: Request,yy:Hitokoto,c:str = None,encode: str = None) -> Response:
 
     try:
         assert c is not None
