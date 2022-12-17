@@ -1,5 +1,6 @@
 from blacksheep.client import ClientSession
-import os,orjson,fastrand
+import os,orjson
+from modules.rand import nazorand 
 class _yiyan:
     def __init__(self,client:ClientSession):
         self.type_cont,self.type_cont_len = {},{}
@@ -34,17 +35,17 @@ class _yiyan:
             self.type_list_len = len(self.type_list)
         for i in self.type_list:
             with open(f"./sentences/{i}.json","r",encoding='utf8') as file:
-                self.type_cont[i] = orjson.loads(file.read)
+                self.type_cont[i] = orjson.loads(file.read())
                 self.type_cont_len[i] = len(self.type_cont[i])
         print('加载完毕')
         
     def get_yiyan(self) -> dict:
-        n = self.type_list[fastrand.pcg32bounded(self.type_list_len)]
-        return self.type_cont[n][fastrand.pcg32bounded(self.type_cont_len[n])]
+        n = self.type_list[nazorand.randbelow(self.type_list_len)]
+        return self.type_cont[n][nazorand.randbelow(self.type_cont_len[n])]
     
     def cut_get_yiyan(self,l:list) -> dict:
         _len = len(l)
         if _len != 1:
-            n = self.type_list[fastrand.pcg32bounded(_len)]
-            return self.type_cont[n][fastrand.pcg32bounded(self.type_cont_len[n])]
-        return self.type_cont[l[0]][fastrand.pcg32bounded(self.type_cont_len[l[0]])]
+            n = self.type_list[nazorand.randbelow(_len)]
+            return self.type_cont[n][nazorand.randbelow(self.type_cont_len[n])]
+        return self.type_cont[l[0]][nazorand.randbelow(self.type_cont_len[l[0]])]
