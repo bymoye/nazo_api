@@ -1,5 +1,5 @@
 from blacksheep.client import ClientSession
-import os,orjson,ujson,fastrand
+import os,orjson,fastrand
 class _yiyan:
     def __init__(self,client:ClientSession):
         self.type_cont,self.type_cont_len = {},{}
@@ -30,11 +30,11 @@ class _yiyan:
     def load(self) -> None:
         print('加载一言')
         with open("./sentences/all.json","r",encoding='utf8') as file:
-            self.type_list = [i['key'] for i in ujson.load(file)]
+            self.type_list = [i['key'] for i in orjson.loads(file.read())]
             self.type_list_len = len(self.type_list)
         for i in self.type_list:
-            with open("./sentences/" + i + '.json',"r",encoding='utf8') as file:
-                self.type_cont[i] = ujson.load(file)
+            with open(f"./sentences/{i}.json","r",encoding='utf8') as file:
+                self.type_cont[i] = orjson.loads(file.read)
                 self.type_cont_len[i] = len(self.type_cont[i])
         print('加载完毕')
         
