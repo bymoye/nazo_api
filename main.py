@@ -2,7 +2,7 @@ from blacksheep import Content, Request, Response
 from blacksheep.client import ClientSession
 from blacksheep.server import Application
 from modules.rand import randimg
-from modules import ip_todo,sql_todo,qq_todo,randimg_todo,yiyan_todo
+from modules import ip_todo,sql_todo,qq_todo,yiyan_todo
 from app import docs,service,router
 from dataclass import sql,httpclient,config
 import orjson
@@ -50,7 +50,7 @@ async def before_start(app: Application) -> None:
     app.services.add_instance(sql_todo.sqlite(), declared_class=sql)
     provider = app.services.build_provider()
     app.services.add_instance(qq_todo._qq(http_client,provider.get(sql)))
-    app.services.add_instance(ip_todo._ip(http_client, Config.module['ip']['key'] ,provider.get(sql)))
+    app.services.add_instance(ip_todo.Ip(http_client, Config.module['ip']['key'] ,provider.get(sql)))
     app.services.add_instance(yiyan_todo._yiyan(http_client))
     app.services.add_instance(randimg.Randimg())
 # 生命周期：启动后

@@ -3,7 +3,7 @@ from abc import ABC
 @dataclass
 class Ip_info:
     country: str
-    province: str
+    region: str
     city: str
     AS: int
     isp: str
@@ -16,9 +16,9 @@ class Qq_info:
 
 @dataclass
 class Ip_result:
-    ip : str
-    data: Ip_info|str
-    code: int
+    ip : str = None
+    data: Ip_info|str = None
+    code: int = None
 
 @dataclass
 class Get_ua_result:

@@ -23,7 +23,7 @@ cdef:
     string URLJPEG = string(b'jpeg')
     string SOURCE = string(b'.source.')
     string SLASH = string(b'/')
-    str MOBILE = 'mobile'
+
 cdef class Randimg:
     cdef:
         int imgpc_total,imgmb_total
@@ -87,14 +87,14 @@ cdef class Randimg:
         cdef string imgFormat
         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
         if encode is None:
-            if method == MOBILE:
+            if method == 'mobile':
                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
         if n > 10:
             n = 10
         if n < 1:
             n = 1
-        if method == MOBILE:
+        if method == 'mobile':
          return self.moreMoblie(n,imgFormat)
         return self.morePc(n,imgFormat)
     

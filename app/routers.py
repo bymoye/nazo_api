@@ -3,7 +3,8 @@ from blacksheep.messages import Request, Response
 from blacksheep.server.bindings import ServerInfo
 from blacksheep.server.routing import Router
 from blacksheep.server.responses import redirect, html, bad_request,not_found
-from modules.ip_todo import _ip
+import orjson
+from modules.ip_todo import Ip
 from modules.qq_todo import _qq
 from modules.yiyan_todo import _yiyan
 from modules.rand.randimg import Randimg as rdimg
@@ -29,17 +30,22 @@ async def index():
     return redirect("/docs")
 
 @docs(ip_API_docs)
-async def Get_ip(ipinfo: _ip, ip: str) -> Response:
+async def Get_ip(ipinfo: Ip, ip: bytes) -> Response:
+    print(ip)
     try:
-        return json(await ipinfo.GetIp(ip))
+        return json(await ipinfo.get_ip(ip))
     except Exception as e:
-        return bad_request(e.__str__())
+        return Response(status=500, content=Content(b"application/json", orjson.dumps({"status": 500, "error": f"{e}"})))
 
 @docs(UA_API_docs)
-async def Get_ua(request: Request,ip:ServerInfo,ipinfo: _ip) -> Response:
-    header = dict([(bytes.decode(i),bytes.decode(j)) for i,j in request.headers])
+async def Get_ua(request: Request,ip:ServerInfo,ipinfo: Ip) -> Response:
+    header = dict([(i.decode(),j.decode()) for i,j in request.headers])
+    print(header)
     ip = header.get("x-real-ip", ip.value[0])
-    _ipinfo = await ipinfo.GetIp(ip)
+    try:
+        _ipinfo = await ipinfo.get_ip(ip.encode())
+    except ValueError:
+        _ipinfo = Ip_result()
     return json(Get_ua_result(ip,header,_ipinfo.data))
 
 
@@ -50,14 +56,12 @@ async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Response:
     return json(await Qqinfo.Get_qqinfo(qqnum))
 
 @docs(randimg_API_docs)
-async def Randimg(request: Request,rdimg:rdimg,encode:str = None,number: int = 1,method:str = 'pc') -> Response:
-    ua = request.get_first_header(b'user-agent')
-    # try:
+async def Randimg(request: Request,rdimg:rdimg,method:str = 'pc',encode:str = None,number: int = 1) -> Response:
+    ua = request.get_single_header(b'user-agent')
     if encode not in ['json',None]:
         encode = None
     if encode:
         return json({'code': 200,'url':rdimg.process(ua,encode,number,method)})
-    print(rdimg.process(ua,encode,number,method))
     return Response(302, [(b"Location", rdimg.process(ua,encode,number,method))])
 
 
@@ -70,7 +74,7 @@ async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> R
         slist = [x for x in t if x in yy.type_list]
         assert slist is not []
         result = yy.cut_get_yiyan(slist)
-    except:
+    except Exception:
         result = yy.get_yiyan()
     return html(str(result)) if encode == 'text' else pretty_json(result)
 

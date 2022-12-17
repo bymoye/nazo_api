@@ -30,7 +30,7 @@ ip_API_docs = EndpointDocs(
                         ResponseExample(
                             value=Ip_result(
                                 ip = '8.8.8.8',
-                                data = Ip_info(country='美国',province='null',city='null',AS=15169,isp='GOOGLE - Google LLC'),
+                                data = Ip_info(country='美国',region='null',city='null',AS=15169,isp='GOOGLE - Google LLC'),
                                 code = 0
                             )
                         )
@@ -74,7 +74,7 @@ UA_API_docs = EndpointDocs(
                                         "accept-encoding": "gzip, deflate, br",
                                         "accept-language": "zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7",
                                     },
-                                ipinfo = Ip_info(country='美国',province='null',city='null',AS=15169,isp='GOOGLE - Google LLC')
+                                ipinfo = Ip_info(country='美国',region='null',city='null',AS=15169,isp='GOOGLE - Google LLC')
                             )
                         )
                     ]

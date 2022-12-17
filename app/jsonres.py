@@ -1,6 +1,8 @@
 from typing import Any
 from blacksheep import Content, Response
 from orjson import dumps,OPT_INDENT_2
+
+JSON_RESPONSE = b"application/json"
 def json(data: Any, status: int = 200) -> Response:
     """
     Returns a response with application/json content,
@@ -10,7 +12,7 @@ def json(data: Any, status: int = 200) -> Response:
         status,
         None,
         Content(
-            b"application/json",
+            JSON_RESPONSE,
             dumps(data)
         ),
     )
@@ -28,7 +30,7 @@ def pretty_json(
         status,
         None,
         Content(
-            b"application/json",
+            JSON_RESPONSE,
             dumps(data,option=OPT_INDENT_2)
         ),
     )
