@@ -70,7 +70,7 @@ async def get_ua(request: Request, ip: ServerInfo, ipinfo: IpUtils) -> Response:
 async def get_qq(qqnum: int, Qqinfo: QQUtils) -> Response:
     if qqnum < 10000 or qqnum > 9999999999:
         return not_found("qq号码错误")
-    return json(await Qqinfo.Get_qqinfo(qqnum))
+    return json(await Qqinfo.get_qqinfo(qqnum))
 
 
 @docs(randimg_API_docs)
@@ -90,19 +90,12 @@ async def randImg(
 
 
 @docs(yiyan_API_docs)
-async def yiyan(
-    request: Request, yy: Hitokoto, c: str = None, encode: str = None
-) -> Response:
-
-    try:
-        assert c is not None
-        t = request.query.get("c")
-        slist = [x for x in t if x in yy.type_list]
-        assert slist is not []
-        result = yy.cut_get_yiyan(slist)
-    except Exception:
-        result = yy.get_yiyan()
-    return html(str(result)) if encode == "text" else pretty_json(result)
+async def yiyan(request: Request, hitokoto: Hitokoto) -> Response:
+    t = request.query.get("c", [])
+    if t:
+        t = list(set(hitokoto.type_list) & set(t))
+    result = hitokoto.get_hitokoto(t)
+    return pretty_json(result)
 
 
 if Config["qq"]["enable"]:

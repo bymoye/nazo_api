@@ -7,7 +7,7 @@ import ipaddress
 from modules.sql_todo import SelfSqlite
 
 
-class IpCheck:
+class IpUtils:
     def __init__(self, client: ClientSession, key: str, sql: SelfSqlite) -> None:
         self.reader_City = geoip2.database.Reader(
             "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
