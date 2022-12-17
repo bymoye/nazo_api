@@ -30,7 +30,7 @@ async def index():
     return redirect("/docs")
 
 @docs(ip_API_docs)
-async def Get_ip(ipinfo: Ip, ip: bytes) -> Response:
+async def get_ip(ipinfo: Ip, ip: bytes) -> Response:
     print(ip)
     try:
         return json(await ipinfo.get_ip(ip))
@@ -38,7 +38,7 @@ async def Get_ip(ipinfo: Ip, ip: bytes) -> Response:
         return Response(status=500, content=Content(b"application/json", orjson.dumps({"status": 500, "error": f"{e}"})))
 
 @docs(UA_API_docs)
-async def Get_ua(request: Request,ip:ServerInfo,ipinfo: Ip) -> Response:
+async def get_ua(request: Request,ip:ServerInfo,ipinfo: Ip) -> Response:
     header = dict([(i.decode(),j.decode()) for i,j in request.headers])
     print(header)
     ip = header.get("x-real-ip", ip.value[0])
@@ -50,13 +50,13 @@ async def Get_ua(request: Request,ip:ServerInfo,ipinfo: Ip) -> Response:
 
 
 @docs(QQ_API_docs)
-async def Get_Qq(qqnum:int,Qqinfo: _qq) -> Response:
+async def get_qq(qqnum:int,Qqinfo: _qq) -> Response:
     if qqnum < 10000 or qqnum > 9999999999:
         return not_found('qq号码错误')
     return json(await Qqinfo.Get_qqinfo(qqnum))
 
 @docs(randimg_API_docs)
-async def Randimg(request: Request,rdimg:rdimg,method:str = 'pc',encode:str = None,number: int = 1) -> Response:
+async def randImg(request: Request,rdimg:rdimg,method:str = 'pc',encode:str = None,number: int = 1) -> Response:
     ua = request.get_single_header(b'user-agent')
     if encode not in ['json',None]:
         encode = None
@@ -79,12 +79,12 @@ async def yiyan(request: Request,yy:_yiyan,c:str = None,encode: str = None) -> R
     return html(str(result)) if encode == 'text' else pretty_json(result)
 
 if Config['qq']['enable']:
-    add_get("/qq/{qqnum}",Get_Qq)
+    add_get("/qq/{qqnum}",get_qq)
 if Config['ip']['enable']:
-    add_get("/ip/{str:ip}",Get_ip)
+    add_get("/ip/{str:ip}",get_ip)
 if Config['yiyan']['enable']:
     add_get("/yiyan",yiyan)
 if Config['randimg']['enable']:
-    add_get('/randimg',Randimg)
+    add_get('/randimg',randImg)
 if Config['ua']['enable']:
-    add_get('/ua',Get_ua)
+    add_get('/ua',get_ua)
