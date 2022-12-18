@@ -15,7 +15,7 @@ __all__ = (
 )
 
 
-cdef extern from "Rand.hpp":
+cdef extern from "rand.hpp":
     cdef int uniform_int_variate "Storm::uniform_int_variate"(int a, int b)
     cdef int random_range "Storm::random_range"(int start, int stop, int step)
     cdef int random_below  "Storm::random_below"(int number)

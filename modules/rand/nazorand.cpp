@@ -4,7 +4,7 @@
 {
     "distutils": {
         "depends": [
-            "modules/rand/Rand.hpp"
+            "modules/rand/rand.hpp"
         ],
         "extra_compile_args": [
             "-std=c++17",
@@ -1008,7 +1008,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__modules__rand__nazorand
 #define __PYX_HAVE_API__modules__rand__nazorand
 /* Early includes */
-#include "Rand.hpp"
+#include "rand.hpp"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
