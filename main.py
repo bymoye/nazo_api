@@ -1,5 +1,4 @@
 from blacksheep import Content, Request, Response
-from blacksheep.client import ClientSession
 from blacksheep.server import Application
 from modules.rand import randimg
 from modules import ip_todo, sql_todo, qq_todo, yiyan_todo
@@ -47,11 +46,9 @@ app.handle_internal_server_error = handler_error
 # 生命周期：启动前
 @app.on_start
 async def before_start(app: Application) -> None:
-    http_client = ClientSession(follow_redirects=False)
-    app.services.add_instance(http_client, declared_class=httpclient)
     app.services.add_instance(sql_todo.SelfSqlite(), declared_class=sql)
     provider = app.services.build_provider()
-    app.services.add_instance(qq_todo.QQUtils(http_client, provider.get(sql)))
+    app.services.add_instance(qq_todo.QQUtils(provider.get(sql)))
     app.services.add_instance(
         ip_todo.IpUtils(Config.module["ip"]["key"], provider.get(sql))
     )

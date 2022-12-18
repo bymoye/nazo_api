@@ -1,5 +1,4 @@
 import os, orjson, httpx
-from blacksheep.client import ClientSession
 from modules.rand import nazorand
 
 
