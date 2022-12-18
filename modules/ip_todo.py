@@ -13,12 +13,6 @@ class IpUtils:
         )
         self.reader_ASN = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
         self.sqlite, self.key = sql, key
-        self.flag = {}
-
-    def Error(self, msg: str, ip: str | None, clear: bool = False) -> None:
-        if clear:
-            self.flag.pop(ip)
-        raise Exception(msg)
 
     async def get_ip(self, ip: bytes) -> IpResult:
         try:
