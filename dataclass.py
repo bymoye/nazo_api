@@ -1,41 +1,50 @@
 from dataclasses import dataclass
 from abc import ABC
+
+
 @dataclass
-class Ip_info:
+class IPDataClass:
     country: str
     region: str
     city: str
     AS: int
     isp: str
 
+
 @dataclass
-class Qq_info:
+class QQDataClass:
     qqnumber: int
     qqname: str
     qqavatar: str
 
+
 @dataclass
-class Ip_result:
-    ip : str = None
-    data: Ip_info|str = None
+class IpResult:
+    ip: str = None
+    data: IPDataClass | str = None
     code: int = None
 
-@dataclass
-class Get_ua_result:
-    ip : str
-    header : dict
-    ipinfo : Ip_info
 
 @dataclass
-class randimg_result:
-    code : int
-    url : str|list
+class UADataClass:
+    ip: str
+    header: dict
+    ipinfo: IPDataClass
+
+
+@dataclass
+class RandImgDataClass:
+    code: int
+    url: str | list
+
 
 class sql(ABC):
     pass
 
+
 class httpclient(ABC):
     pass
+
 
 class config(ABC):
     pass

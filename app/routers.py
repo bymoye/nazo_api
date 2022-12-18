@@ -8,7 +8,7 @@ from modules.ip_todo import IpUtils
 from modules.qq_todo import QQUtils
 from modules.yiyan_todo import Hitokoto
 from modules.rand.randimg import Randimg as rdimg
-from dataclass import Get_ua_result, Ip_result, Qq_info, randimg_result, config
+from dataclass import UADataClass, IpResult, QQDataClass, RandImgDataClass, config
 from app.docs import (
     UA_API_docs,
     ip_API_docs,
@@ -62,15 +62,21 @@ async def get_ua(request: Request, ip: ServerInfo, ipinfo: IpUtils) -> Response:
     try:
         _ipinfo = await ipinfo.get_ip(ip.encode())
     except ValueError:
-        _ipinfo = Ip_result()
-    return json(Get_ua_result(ip, header, _ipinfo.data))
+        _ipinfo = IpResult()
+    return json(UADataClass(ip, header, _ipinfo.data))
 
 
 @docs(QQ_API_docs)
-async def get_qq(qqnum: int, Qqinfo: QQUtils) -> Response:
-    if qqnum < 10000 or qqnum > 9999999999:
-        return not_found("qq号码错误")
-    return json(await Qqinfo.get_qqinfo(qqnum))
+async def get_qq(qqnum: str, qq_utils: QQUtils) -> Response:
+    if (
+        (not qqnum.isdigit())
+        or (qqnum.startswith("0"))
+        or (len(qqnum) > 11)
+        or (len(qqnum) < 5)
+    ):
+        return bad_request("qq号码错误")
+    status, result = await qq_utils.get_qqinfo(qqnum)
+    return json(result) if status else bad_request(result)
 
 
 @docs(randimg_API_docs)
@@ -99,7 +105,7 @@ async def yiyan(request: Request, hitokoto: Hitokoto) -> Response:
 
 
 if Config["qq"]["enable"]:
-    add_get("/qq/{qqnum}", get_qq)
+    add_get("/qq/{str:qqnum}", get_qq)
 if Config["ip"]["enable"]:
     add_get("/ip/{str:ip}", get_ip)
 if Config["yiyan"]["enable"]:

@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from dataclass import Ip_info, Qq_info
+from dataclass import IPDataClass, QQDataClass
 import orjson
 
 
@@ -39,7 +39,7 @@ class SelfSqlite:
         try:
             create_table = """
             CREATE TABLE IF NOT EXISTS qqcache(
-            qqnum       INT,
+            qqnum       CHAR(15),
             Result      TEXT,
             CreateTime  TIMESTAMP,
             PRIMARY KEY (qqnum),
@@ -51,28 +51,32 @@ class SelfSqlite:
         except:
             raise Exception("创建QQ缓存表发生错误")
 
-    def query_qq_table(self, qqnum: int) -> Qq_info | bool:
+    def query_qq_table(self, qqnum: str) -> QQDataClass | bool:
         sql = "select * FROM qqcache WHERE qqnum=:qqnum AND CreateTime > strftime('%s','now') - 43200"
         with self.con as con:
             result = con.execute(sql, {"qqnum": qqnum}).fetchone()
             return (
-                False if result is None else Qq_info(**orjson.loads(result["Result"]))
+                False
+                if result is None
+                else QQDataClass(**orjson.loads(result["Result"]))
             )
 
-    def query_ip_table(self, IP: str) -> Ip_info | bool:
+    def query_ip_table(self, IP: str) -> IPDataClass | bool:
         sql = "select * FROM ipcache WHERE IP=:IP AND CreateTime > strftime('%s','now') - 2592000"
         with self.con as con:
             result = con.execute(sql, {"IP": IP}).fetchone()
             return (
-                False if result is None else Ip_info(**orjson.loads(result["Result"]))
+                False
+                if result is None
+                else IPDataClass(**orjson.loads(result["Result"]))
             )
 
-    def write_qq_table(self, qqnum: int, Result: Qq_info) -> None:
+    def write_qq_table(self, qqnum: int, Result: QQDataClass) -> None:
         sql = "INSERT OR REPLACE INTO qqcache VALUES (:qqnum , :Result , strftime('%s','now'))"
         with self.con as con:
             con.execute(sql, {"qqnum": qqnum, "Result": orjson.dumps(Result)})
 
-    def write_ip_table(self, IP: str, Result: Ip_info) -> None:
+    def write_ip_table(self, IP: str, Result: IPDataClass) -> None:
         sql = "INSERT OR REPLACE INTO ipcache VALUES (:IP , :Result , strftime('%s','now'))"
         with self.con as con:
             con.execute(sql, {"IP": IP, "Result": orjson.dumps(Result)})
