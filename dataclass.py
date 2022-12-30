@@ -42,9 +42,5 @@ class sql(ABC):
     pass
 
 
-class httpclient(ABC):
-    pass
-
-
 class config(ABC):
     pass

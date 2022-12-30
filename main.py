@@ -3,7 +3,7 @@ from blacksheep.server import Application
 from modules.rand import randimg
 from modules import ip_todo, sql_todo, qq_todo, yiyan_todo
 from app import docs, service, router
-from dataclass import sql, httpclient, config
+from dataclass import sql, config
 import orjson
 from blacksheep.plugins import json
 from config import _ApiConfig
@@ -68,7 +68,6 @@ async def after_start(app: Application) -> None:
 @app.on_stop
 async def on_stop(app: Application) -> None:
     await app.service_provider[sql].close()
-    await app.service_provider[httpclient].close()
 
 
 if __name__ == "__main__":
