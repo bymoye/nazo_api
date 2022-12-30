@@ -80,7 +80,7 @@ async def get_qq(qqnum: str, qq_utils: QQUtils) -> Response:
 
 
 @docs(randimg_API_docs)
-async def randImg(
+async def rand_img(
     request: Request,
     rdimg: rdimg,
     method: str = "pc",
@@ -111,6 +111,6 @@ if g_config.ip.enable:
 if g_config.yiyan.enable:
     add_get("/yiyan", yiyan)
 if g_config.randimg.enable:
-    add_get("/randimg", randImg)
+    add_get("/randimg", rand_img)
 if g_config.ua.enable:
     add_get("/ua", get_ua)
