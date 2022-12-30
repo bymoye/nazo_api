@@ -9,7 +9,6 @@ module:
   ip:
     # ip接口 默认关闭, 请确保完成 README 需要的ip库再开启.
     enable: False
-    key: 
   randimg:
     enable: True
   ua:

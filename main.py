@@ -49,9 +49,7 @@ async def before_start(app: Application) -> None:
     app.services.add_instance(sql_todo.SelfSqlite(), declared_class=sql)
     provider = app.services.build_provider()
     app.services.add_instance(qq_todo.QQUtils(provider.get(sql)))
-    app.services.add_instance(
-        ip_todo.IpUtils(Config.module["ip"]["key"], provider.get(sql))
-    )
+    app.services.add_instance(ip_todo.IpUtils(provider.get(sql)))
     app.services.add_instance(yiyan_todo.Hitokoto())
     app.services.add_instance(randimg.Randimg())
 

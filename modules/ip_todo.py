@@ -7,12 +7,12 @@ from modules.sql_todo import SelfSqlite
 
 
 class IpUtils:
-    def __init__(self, key: str, sql: SelfSqlite) -> None:
+    def __init__(self, sql: SelfSqlite) -> None:
         self.reader_City = geoip2.database.Reader(
             "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
         )
         self.reader_ASN = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
-        self.sqlite, self.key = sql, key
+        self.sqlite = sql
 
     async def get_ip(self, ip: bytes) -> IpResult:
         try:
