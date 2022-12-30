@@ -19,12 +19,12 @@ from app.docs import (
 )
 from app.jsonres import json, pretty_json
 from app.services import service
-from config import _ApiConfig
+from config import Module
 
 router = Router()
 get = router.get
 add_get = router.add_get
-Config: _ApiConfig = service.build_provider().get(config).config.module
+g_config: Module = service.build_provider().get(config).config.module
 
 # 未定义路由
 def fallback() -> Response:
@@ -104,13 +104,13 @@ async def yiyan(request: Request, hitokoto: Hitokoto) -> Response:
     return pretty_json(result)
 
 
-if Config["qq"]["enable"]:
+if g_config.qq.enable:
     add_get("/qq/{str:qqnum}", get_qq)
-if Config["ip"]["enable"]:
+if g_config.ip.enable:
     add_get("/ip/{str:ip}", get_ip)
-if Config["yiyan"]["enable"]:
+if g_config.yiyan.enable:
     add_get("/yiyan", yiyan)
-if Config["randimg"]["enable"]:
+if g_config.randimg.enable:
     add_get("/randimg", randImg)
-if Config["ua"]["enable"]:
+if g_config.ua.enable:
     add_get("/ua", get_ua)

@@ -71,4 +71,4 @@ async def on_stop(app: Application) -> None:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app=app, port=Config._global["port"], limit_concurrency=500)
+    uvicorn.run(app=app, port=Config.god.port, limit_concurrency=500)
