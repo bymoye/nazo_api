@@ -18,7 +18,7 @@ docs = OpenAPIHandler(
     ui_path="/docs/test",
     info=Info(
         title="nmx API",
-        version="0.2.0",
+        version="0.3.0",
         contact=Contact("迷与谜&bymoye", "https://nmxc.ltd", "s3moye@gmail.com"),
     ),
 )

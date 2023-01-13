@@ -42,7 +42,6 @@ async def index():
 
 @docs(ip_API_docs)
 async def get_ip(ipinfo: IpUtils, ip: bytes) -> Response:
-    print(ip)
     try:
         return json(await ipinfo.get_ip(ip))
     except Exception as e:
@@ -55,9 +54,12 @@ async def get_ip(ipinfo: IpUtils, ip: bytes) -> Response:
 
 
 @docs(UA_API_docs)
-async def get_ua(request: Request, ip: ServerInfo, ipinfo: IpUtils) -> Response:
-    header = dict([(i.decode(), j.decode()) for i, j in request.headers])
-    print(header)
+async def get_ua(
+    request: Request,
+    ip: ServerInfo,
+    ipinfo: IpUtils,
+) -> Response:
+    header = {i.decode(): j.decode() for i, j in request.headers}
     ip = header.get("x-real-ip", ip.value[0])
     try:
         _ipinfo = await ipinfo.get_ip(ip.encode())
