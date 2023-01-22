@@ -18,7 +18,7 @@
 
 本程序需要 ip2asn 库(本库不提供下载)
 
-请自行到 [iptoasn](https://iptoasn.com/) 下载 `ip2asn-v4-u32.tsv`和`ip2asn-v6.tsv` 并放到 `src` 目录中
+请自行到 [iptoasn](https://iptoasn.com/) 下载 `ip2asn-v4.tsv`和`ip2asn-v6.tsv` 并放到 `src` 目录中
 
 随机图库放在 `./src/img_url_mb.txt` 和 `./src/img_url_pc.txt` 中 可以自行修改其中的链接 
 
