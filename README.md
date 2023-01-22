@@ -28,6 +28,8 @@
 
 一言库使用 [sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle)
 
+需要安装 `boost` 库 
+
 # 建议
 虽然可以直接使用 `uvicorn`，但是还是建议使用 [nginx-unit](https://unit.nginx.org/installation/)
 
