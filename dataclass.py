@@ -35,12 +35,4 @@ class UADataClass:
 @dataclass
 class RandImgDataClass:
     code: int
-    url:  str
-
-
-class sql(ABC):
-    pass
-
-
-class config(ABC):
-    pass
+    url: str

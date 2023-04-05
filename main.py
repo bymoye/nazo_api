@@ -4,7 +4,6 @@ from blacksheep import Content, Request, Response, Application
 from modules.rand import randimg
 from modules import ip_todo, SelfSqlite, qq_todo, yiyan_todo
 from app import docs, router
-from dataclass import sql
 from blacksheep.plugins import json
 
 # Config: _ApiConfig = service.build_provider().get(config).config

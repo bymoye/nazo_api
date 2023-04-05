@@ -8,7 +8,7 @@ from modules.ip_todo import IpUtils
 from modules.qq_todo import QQUtils
 from modules.yiyan_todo import Hitokoto
 from modules.rand.randimg import Randimg as rdimg
-from dataclass import UADataClass, IpResult, config
+from dataclass import UADataClass, IpResult
 from app.docs import (
     UA_API_docs,
     ip_API_docs,
