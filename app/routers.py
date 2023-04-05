@@ -37,10 +37,10 @@ async def index():
 
 
 @docs(ip_API_docs)
-@get("/ip/{str:ip}")
-async def get_ip(ipinfo: IpUtils, ip: FromQuery[bytes]) -> Response:
+@get("/ip/{ip}")
+async def get_ip(ipinfo: FromServices[IpUtils], ip: FromQuery[bytes]) -> Response:
     try:
-        return json(await ipinfo.get_ip(ip.value))
+        return json(await ipinfo.value.get_ip(ip.value))
     except Exception as e:
         return Response(
             status=500,
@@ -118,9 +118,9 @@ async def rand_img(
 
 @docs(yiyan_API_docs)
 @get("/yiyan")
-async def yiyan(request: Request, hitokoto: FromServices[Hitokoto]) -> Response:
-    t = request.query.get("c", [])
-    if t:
-        t = list(set(hitokoto.value.type_list) & set(t))
+async def yiyan(
+    hitokoto: FromServices[Hitokoto], c: FromQuery[set] = FromQuery({})
+) -> Response:
+    t = list(hitokoto.value.type_set & c.value)
     result = hitokoto.value.get_hitokoto(t)
     return pretty_json(result)

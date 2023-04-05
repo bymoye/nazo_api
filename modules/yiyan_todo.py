@@ -40,6 +40,7 @@ class Hitokoto:
         print("加载一言")
         with open("./sentences/all.json", "r", encoding="utf8") as file:
             self.type_list = [i["key"] for i in orjson.loads(file.read())]
+            self.type_set = set(self.type_list)
             self.type_list_len = len(self.type_list)
         for i in self.type_list:
             with open(f"./sentences/{i}.json", "r", encoding="utf8") as file:
@@ -53,7 +54,7 @@ class Hitokoto:
 
     def get_hitokoto(self, l: list = None) -> dict:
         n = (
-            self.type_list[nazorand.randbelow(len(l))]
+            l[nazorand.randbelow(len(l))]
             if l
             else self.type_list[nazorand.randbelow(self.type_list_len)]
         )

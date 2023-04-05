@@ -1,11 +1,10 @@
 import os
-from blacksheep import Content, Request, Response
-from blacksheep.server import Application
+import orjson
+from blacksheep import Content, Request, Response, Application
 from modules.rand import randimg
-from modules import ip_todo, sql_todo, qq_todo, yiyan_todo
+from modules import ip_todo, SelfSqlite, qq_todo, yiyan_todo
 from app import docs, router
 from dataclass import sql
-import orjson
 from blacksheep.plugins import json
 
 # Config: _ApiConfig = service.build_provider().get(config).config
@@ -46,9 +45,11 @@ app.handle_internal_server_error = handler_error
 # 生命周期：启动前
 @app.on_start
 async def before_start(app: Application) -> None:
-    app.services.add_instance(sql_todo.SelfSqlite(), declared_class=sql)
-    provider = app.services.build_provider()
-    app.services.add_instance(qq_todo.QQUtils(provider.get(sql)))
+    app.services.add_instance(SelfSqlite())
+    # provider = app.services.build_provider()
+    app.services.add_instance(
+        qq_todo.QQUtils(app.services.build_provider().get(SelfSqlite))
+    )
     app.services.add_instance(ip_todo.IpUtils())
     app.services.add_instance(yiyan_todo.Hitokoto())
     app.services.add_instance(randimg.Randimg())
