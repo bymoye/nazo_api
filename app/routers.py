@@ -1,9 +1,9 @@
-from blacksheep import Content
+import orjson
+from blacksheep import Content, FromQuery
 from blacksheep.messages import Request, Response
-from blacksheep.server.bindings import ServerInfo
+from blacksheep.server.bindings import ServerInfo, FromServices, FromHeader, FromRoute
 from blacksheep.server.routing import Router
 from blacksheep.server.responses import redirect, bad_request
-import orjson
 from modules.ip_todo import IpUtils
 from modules.qq_todo import QQUtils
 from modules.yiyan_todo import Hitokoto
@@ -18,13 +18,9 @@ from app.docs import (
     QQ_API_docs,
 )
 from app.jsonres import json, pretty_json
-from app.services import service
-from config import Module
 
 router = Router()
 get = router.get
-add_get = router.add_get
-g_config: Module = service.build_provider().get(config).config.module
 
 # 未定义路由
 def fallback() -> Response:
@@ -41,9 +37,10 @@ async def index():
 
 
 @docs(ip_API_docs)
-async def get_ip(ipinfo: IpUtils, ip: bytes) -> Response:
+@get("/ip/{str:ip}")
+async def get_ip(ipinfo: IpUtils, ip: FromQuery[bytes]) -> Response:
     try:
-        return json(await ipinfo.get_ip(ip))
+        return json(await ipinfo.get_ip(ip.value))
     except Exception as e:
         return Response(
             status=500,
@@ -54,65 +51,76 @@ async def get_ip(ipinfo: IpUtils, ip: bytes) -> Response:
 
 
 @docs(UA_API_docs)
+@get("/ua")
 async def get_ua(
     request: Request,
     ip: ServerInfo,
-    ipinfo: IpUtils,
+    ipinfo: FromServices[IpUtils],
 ) -> Response:
     header = {i.decode(): j.decode() for i, j in request.headers}
     ip = header.get("x-real-ip", ip.value[0])
     try:
-        _ipinfo = await ipinfo.get_ip(ip.encode())
+        _ipinfo = await ipinfo.value.get_ip(ip.encode())
     except ValueError:
         _ipinfo = IpResult()
     return json(UADataClass(ip, header, _ipinfo.data))
 
 
 @docs(QQ_API_docs)
-async def get_qq(qqnum: str, qq_utils: QQUtils) -> Response:
+@get("/qq/{str:qqnum}")
+async def get_qq(qqnum: FromRoute[str], qq_utils: FromServices[QQUtils]) -> Response:
     if (
-        (not qqnum.isdigit())
-        or (qqnum.startswith("0"))
-        or (len(qqnum) > 11)
-        or (len(qqnum) < 5)
+        (not qqnum.value.isdigit())
+        or (qqnum.value.startswith("0"))
+        or not (5 < len(qqnum.value) < 11)
     ):
         return bad_request("qq号码错误")
-    status, result = await qq_utils.get_qqinfo(qqnum)
+    status, result = await qq_utils.value.get_qqinfo(qqnum.value)
     return json(result) if status else bad_request(result)
 
 
+class FromUserAgent(FromHeader[bytes]):
+    name = "user-agent"
+
+
 @docs(randimg_API_docs)
+@get("/randimg")
 async def rand_img(
-    request: Request,
-    rdimg: rdimg,
-    method: str = "pc",
-    encode: str = None,
-    number: int = 1,
+    # request: Request,
+    ua: FromUserAgent,
+    rdimg: FromServices[rdimg],
+    method: FromQuery[str] = FromQuery("pc"),
+    encode: FromQuery[str] = FromQuery(None),
+    number: FromQuery[int] = FromQuery(1),
 ) -> Response:
-    ua = request.get_single_header(b"user-agent")
-    if encode not in ["json", None]:
-        encode = None
-    if encode:
-        return json({"code": 200, "url": rdimg.process(ua, encode, number, method)})
-    return Response(302, [(b"Location", rdimg.process(ua, encode, number, method))])
+    # ua = request.get_single_header(b"user-agent")
+    if encode.value not in ["json", None]:
+        encode.value = None
+    if encode.value:
+        return json(
+            {
+                "code": 200,
+                "url": rdimg.value.process(
+                    ua.value, encode.value, number.value, method.value
+                ),
+            }
+        )
+    return Response(
+        302,
+        [
+            (
+                b"Location",
+                rdimg.value.process(ua.value, encode.value, number.value, method.value),
+            )
+        ],
+    )
 
 
 @docs(yiyan_API_docs)
-async def yiyan(request: Request, hitokoto: Hitokoto) -> Response:
+@get("/yiyan")
+async def yiyan(request: Request, hitokoto: FromServices[Hitokoto]) -> Response:
     t = request.query.get("c", [])
     if t:
-        t = list(set(hitokoto.type_list) & set(t))
-    result = hitokoto.get_hitokoto(t)
+        t = list(set(hitokoto.value.type_list) & set(t))
+    result = hitokoto.value.get_hitokoto(t)
     return pretty_json(result)
-
-
-if g_config.qq.enable:
-    add_get("/qq/{str:qqnum}", get_qq)
-if g_config.ip.enable:
-    add_get("/ip/{str:ip}", get_ip)
-if g_config.yiyan.enable:
-    add_get("/yiyan", yiyan)
-if g_config.randimg.enable:
-    add_get("/randimg", rand_img)
-if g_config.ua.enable:
-    add_get("/ua", get_ua)

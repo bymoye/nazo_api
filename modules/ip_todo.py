@@ -1,32 +1,41 @@
-import geoip2.database
+from geoip2.database import Reader
+from geoip2.errors import AddressNotFoundError
 from maxminddb import MODE_MMAP_EXT
 from dataclass import IpResult, IPDataClass
 from modules.asn.ip2asn import IpToAsn
-import ipaddress
+from ipaddress import ip_address
+import os
 
 
 class IpUtils:
     def __init__(self) -> None:
-        self.reader_City = geoip2.database.Reader(
+        if not os.path.exists("./src/GeoLite2-City.mmdb"):
+            raise FileNotFoundError("GeoLite2-City.mmdb文件不存在")
+        if not os.path.exists("./src/ip2asn-v4.tsv"):
+            raise FileNotFoundError("ip2asn-v4.tsv文件不存在")
+        if not os.path.exists("./src/ip2asn-v6.tsv"):
+            raise FileNotFoundError("ip2asn-v6.tsv文件不存在")
+
+        self.reader_city = Reader(
             "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
         )
-        self.reader_ASN = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
+        self.reader_asn = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
 
     async def get_ip(self, ip: bytes) -> IpResult:
         try:
-            _ip = ipaddress.ip_address(ip.decode("utf8"))
-            city = self.reader_City.city(_ip)
+            _ip = ip_address(ip.decode("utf8"))
+            city = self.reader_city.city(_ip)
         except ValueError:
-            raise ValueError("IP地址不合法") from None
-        except geoip2.errors.AddressNotFoundError:
+            raise ValueError("IP地址不合法")
+        except AddressNotFoundError:
             if _ip.is_private:
-                raise ValueError("IP地址为私有地址") from None
+                raise ValueError("IP地址为私有地址")
             if _ip.is_multicast:
-                raise ValueError("IP地址为组播地址") from None
+                raise ValueError("IP地址为组播地址")
             if _ip.is_unspecified:
-                raise ValueError("IP地址为未指定地址") from None
+                raise ValueError("IP地址为未指定地址")
 
-        asn = self.reader_ASN.lookup(ip)
+        asn = self.reader_asn.lookup(ip)
         asn_type = type(asn)
         ipinfo = IPDataClass(
             country=city.country.name,

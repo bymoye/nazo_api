@@ -5,6 +5,8 @@ sentences
 GeoLite2-*
 ip2asn-*
 config.yaml
+nazo_api
+access.log
 build_cython
 *.so
 *.o

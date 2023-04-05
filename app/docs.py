@@ -19,7 +19,7 @@ docs = OpenAPIHandler(
     info=Info(
         title="nmx API",
         version="0.3.0",
-        contact=Contact("迷与谜&bymoye", "https://nmxc.ltd", "s3moye@gmail.com"),
+        contact=Contact("迷与谜&bymoye", "https://www.nazo.run", "s3moye@gmail.com"),
     ),
 )
 docs.ui_providers.append(ReDocUIProvider("/docs"))

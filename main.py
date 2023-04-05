@@ -1,16 +1,16 @@
+import os
 from blacksheep import Content, Request, Response
 from blacksheep.server import Application
 from modules.rand import randimg
 from modules import ip_todo, sql_todo, qq_todo, yiyan_todo
-from app import docs, service, router
-from dataclass import sql, config
+from app import docs, router
+from dataclass import sql
 import orjson
 from blacksheep.plugins import json
-from config import _ApiConfig
 
-Config: _ApiConfig = service.build_provider().get(config).config
+# Config: _ApiConfig = service.build_provider().get(config).config
 # 初始化
-app = Application(router=router, services=service)
+app = Application(router=router)
 # redoc文档
 docs.bind_app(app)
 # CORS跨域问题
@@ -71,4 +71,4 @@ async def on_stop(app: Application) -> None:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app=app, port=Config.god.port, limit_concurrency=500)
+    uvicorn.run(app=app, port=os.environ.get("port", 5000), limit_concurrency=500)

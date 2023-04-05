@@ -21,7 +21,7 @@ class QQDataClass:
 @dataclass
 class IpResult:
     ip: str = None
-    data: IPDataClass | str = None
+    data: IPDataClass = None
     code: int = None
 
 
@@ -35,7 +35,7 @@ class UADataClass:
 @dataclass
 class RandImgDataClass:
     code: int
-    url: str | list
+    url:  str
 
 
 class sql(ABC):
