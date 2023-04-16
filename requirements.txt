@@ -7,3 +7,5 @@ essentials_openapi==0.1.5
 dataclasses==0.8
 orjson==3.6.4
 PyYAML==6.0
+webp-support
+nazo_rand

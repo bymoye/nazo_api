@@ -1,5 +1,5 @@
 import os, orjson, httpx
-from modules.rand import nazorand
+from nazo_rand import randbelow
 
 
 class Hitokoto:
@@ -48,14 +48,6 @@ class Hitokoto:
                 self.type_cont_len[i] = len(self.type_cont[i])
         print("加载完毕")
 
-    # def get_yiyan(self) -> dict:
-    #     n = self.type_list[nazorand.randbelow(self.type_list_len)]
-    #     return self.type_cont[n][nazorand.randbelow(self.type_cont_len[n])]
-
     def get_hitokoto(self, l: list = None) -> dict:
-        n = (
-            l[nazorand.randbelow(len(l))]
-            if l
-            else self.type_list[nazorand.randbelow(self.type_list_len)]
-        )
-        return self.type_cont[n][nazorand.randbelow(self.type_cont_len[n])]
+        n = l[randbelow(len(l))] if l else self.type_list[randbelow(self.type_list_len)]
+        return self.type_cont[n][randbelow(self.type_cont_len[n])]

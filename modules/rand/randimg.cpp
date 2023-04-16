@@ -5,7 +5,7 @@
     "distutils": {
         "depends": [],
         "extra_compile_args": [
-            "-O2"
+            "-O3"
         ],
         "language": "c++",
         "name": "modules.rand.randimg",
@@ -772,28 +772,12 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__modules__rand__randimg
 #define __PYX_HAVE_API__modules__rand__randimg
 /* Early includes */
-#include <string.h>
-#include <stdlib.h>
 #include "ios"
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
-#include <utility>
-
-    #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
-    // move should be defined for these versions of MSVC, but __cplusplus isn't set usefully
-    #include <type_traits>
-
-    namespace cython_std {
-    template <typename T> typename std::remove_reference<T>::type&& move(T& t) noexcept { return std::move(t); }
-    template <typename T> typename std::remove_reference<T>::type&& move(T&& t) noexcept { return std::move(t); }
-    }
-
-    #endif
-    
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <string.h>
 #include <string>
 #ifdef _OPENMP
 #include <omp.h>
@@ -1010,25 +994,27 @@ static const char *__pyx_f[] = {
 
 /*--- Type declarations ---*/
 struct __pyx_obj_7modules_4rand_7randimg_Randimg;
-struct __pyx_opt_args_7modules_4rand_8nazorand_randrange;
+struct __pyx_opt_args_9nazo_rand_9nazo_rand_randrange;
 
-/* "nazorand.pxd":8
+/* "nazo_rand/nazo_rand.pxd":12
  * cpdef int randbelow(int a)
  * cpdef int randint(int a,int b)
  * cpdef int randrange(int start,int stop=?,int step=?)             # <<<<<<<<<<<<<<
+ * cpdef double random_double(double a, double b)
+ * cpdef double random_double_noargs()
  */
-struct __pyx_opt_args_7modules_4rand_8nazorand_randrange {
+struct __pyx_opt_args_9nazo_rand_9nazo_rand_randrange {
   int __pyx_n;
   int stop;
   int step;
 };
 
-/* "modules/rand/randimg.pyx":27
- *     string SLASH = string(b'/')
+/* "modules/rand/randimg.pyx":15
+ *     const char* SLASH = b'/'
  * 
  * cdef class Randimg:             # <<<<<<<<<<<<<<
  *     cdef:
- *         int imgpc_total,imgmb_total
+ *         int imgpc_total, imgmb_total
  */
 struct __pyx_obj_7modules_4rand_7randimg_Randimg {
   PyObject_HEAD
@@ -1037,21 +1023,19 @@ struct __pyx_obj_7modules_4rand_7randimg_Randimg {
   int imgmb_total;
   std::vector<std::string>  imgpc;
   std::vector<std::string>  imgmb;
-  std::unordered_map<char *,int>  version_list_c;
 };
 
 
 
 struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg {
-  int (*check_Version)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, char *);
-  int (*strindex)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, char *, char *);
   std::string (*pc)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *);
   std::string (*moblie)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *);
-  PyObject *(*morePc)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, std::string);
-  PyObject *(*moreMoblie)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, std::string);
-  PyObject *(*process)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, PyObject *, PyObject *, int, PyObject *, int __pyx_skip_dispatch);
+  PyObject *(*generate_img_urls)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, char const *, char const *);
+  PyObject *(*process)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, PyObject *, int, PyObject *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *__pyx_vtabptr_7modules_4rand_7randimg_Randimg;
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *);
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1127,26 +1111,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-/* ListCompAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
-/* IncludeCppStringH.proto */
-#include <string>
-
 /* decode_c_string_utf16.proto */
 static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
     int byteorder = 0;
@@ -1167,14 +1131,25 @@ static CYTHON_INLINE PyObject* __Pyx_decode_c_bytes(
          const char* encoding, const char* errors,
          PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
 
-/* decode_cpp_string.proto */
-static CYTHON_INLINE PyObject* __Pyx_decode_cpp_string(
-         std::string cppstring, Py_ssize_t start, Py_ssize_t stop,
+/* decode_bytes.proto */
+static CYTHON_INLINE PyObject* __Pyx_decode_bytes(
+         PyObject* string, Py_ssize_t start, Py_ssize_t stop,
          const char* encoding, const char* errors,
          PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
     return __Pyx_decode_c_bytes(
-        cppstring.data(), cppstring.size(), start, stop, encoding, errors, decode_func);
+        PyBytes_AS_STRING(string), PyBytes_GET_SIZE(string),
+        start, stop, encoding, errors, decode_func);
 }
+
+/* SetItemInt.proto */
+#define __Pyx_SetItemInt(o, i, v, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_SetItemInt_Fast(o, (Py_ssize_t)i, v, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list assignment index out of range"), -1) :\
+               __Pyx_SetItemInt_Generic(o, to_py_func(i), v)))
+static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v);
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v,
+                                               int is_list, int wraparound, int boundscheck);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -1246,15 +1221,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #else
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
-
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* BytesEquals.proto */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* UnicodeEquals.proto */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
 
 /* RaiseArgTupleInvalid.proto */
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
@@ -1444,9 +1410,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
 #endif
 
-/* py_dict_clear.proto */
-#define __Pyx_PyDict_Clear(d) (PyDict_Clear(d), 0)
-
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
@@ -1576,6 +1539,11 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 /* None.proto */
 #include <new>
 
+/* GCCDiagnostics.proto */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+#define __Pyx_HAS_GCC_DIAGNOSTIC
+#endif
+
 /* CppExceptionConversion.proto */
 #ifndef __Pyx_CppExn2PyErr
 #include <new>
@@ -1618,11 +1586,6 @@ static void __Pyx_CppExn2PyErr() {
 }
 #endif
 
-/* GCCDiagnostics.proto */
-#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-#define __Pyx_HAS_GCC_DIAGNOSTIC
-#endif
-
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
@@ -1657,40 +1620,30 @@ static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static int __pyx_f_7modules_4rand_7randimg_7Randimg_check_Version(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, char *__pyx_v_ua); /* proto*/
-static int __pyx_f_7modules_4rand_7randimg_7Randimg_strindex(CYTHON_UNUSED struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, char *__pyx_v_a, char *__pyx_v_b); /* proto*/
-static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto*/
-static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto*/
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_morePc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, std::string __pyx_v_imgFormat); /* proto*/
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_moreMoblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, std::string __pyx_v_imgFormat); /* proto*/
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, PyObject *__pyx_v_encode, int __pyx_v_n, PyObject *__pyx_v_method, int __pyx_skip_dispatch); /* proto*/
-
-/* Module declarations from 'libc.string' */
-
-/* Module declarations from 'libc.stdlib' */
-
-/* Module declarations from 'libcpp.utility' */
-
-/* Module declarations from 'libcpp.unordered_map' */
-
-/* Module declarations from 'libcpp.unordered_set' */
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto*/
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto*/
+static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_generate_img_urls(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, char const *__pyx_v_imgFormat, char const *__pyx_v_method); /* proto*/
+static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, int __pyx_v_n, PyObject *__pyx_v_method, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libcpp.vector' */
 
+/* Module declarations from 'libc.string' */
+
 /* Module declarations from 'libcpp.string' */
 
-/* Module declarations from 'modules.rand.nazorand' */
-static int (*__pyx_f_7modules_4rand_8nazorand_randbelow)(int, int __pyx_skip_dispatch); /*proto*/
+/* Module declarations from 'webp_support.webp_support' */
+static int (*__pyx_f_12webp_support_12webp_support_webp_supported)(PyObject *, int __pyx_skip_dispatch); /*proto*/
 
-/* Module declarations from 'cython' */
+/* Module declarations from 'nazo_rand.nazo_rand' */
+static int (*__pyx_f_9nazo_rand_9nazo_rand_randbelow)(int, int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'modules.rand.randimg' */
 static PyTypeObject *__pyx_ptype_7modules_4rand_7randimg_Randimg = 0;
-static std::string __pyx_v_7modules_4rand_7randimg_URLWEBP;
-static std::string __pyx_v_7modules_4rand_7randimg_PREURL;
-static std::string __pyx_v_7modules_4rand_7randimg_URLJPEG;
-static std::string __pyx_v_7modules_4rand_7randimg_SOURCE;
-static std::string __pyx_v_7modules_4rand_7randimg_SLASH;
+static char const *__pyx_v_7modules_4rand_7randimg_URLWEBP;
+static char const *__pyx_v_7modules_4rand_7randimg_PREURL;
+static char const *__pyx_v_7modules_4rand_7randimg_URLJPEG;
+static char const *__pyx_v_7modules_4rand_7randimg_SOURCE;
+static char const *__pyx_v_7modules_4rand_7randimg_SLASH;
 static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_string(std::string const &); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_string(std::string const &); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(std::string const &); /*proto*/
@@ -1705,10 +1658,9 @@ int __pyx_module_is_main_modules__rand__randimg = 0;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_open;
 static PyObject *__pyx_builtin_TypeError;
+static const char __pyx_k_[] = " ";
 static const char __pyx_k_n[] = "n";
 static const char __pyx_k_ua[] = "ua";
-static const char __pyx_k_OPR[] = "OPR";
-static const char __pyx_k_Edge[] = "Edge";
 static const char __pyx_k_exit[] = "__exit__";
 static const char __pyx_k_json[] = "json";
 static const char __pyx_k_keys[] = "keys";
@@ -1718,31 +1670,21 @@ static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_open[] = "open";
 static const char __pyx_k_self[] = "self";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_UTF_8[] = "UTF-8";
 static const char __pyx_k_enter[] = "__enter__";
 static const char __pyx_k_range[] = "range";
-static const char __pyx_k_Chrome[] = "Chrome";
-static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_method[] = "method";
-static const char __pyx_k_mobile[] = "mobile";
 static const char __pyx_k_reduce[] = "__reduce__";
-static const char __pyx_k_Firefox[] = "Firefox";
 static const char __pyx_k_Randimg[] = "Randimg";
 static const char __pyx_k_process[] = "process";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_setstate[] = "__setstate__";
-static const char __pyx_k_QQBrowser[] = "QQBrowser";
 static const char __pyx_k_TypeError[] = "TypeError";
-static const char __pyx_k_UCBrowser[] = "UCBrowser";
-static const char __pyx_k_iteritems[] = "iteritems";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
-static const char __pyx_k_AppleWebKit[] = "AppleWebKit";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
-static const char __pyx_k_SamsungBrowser[] = "SamsungBrowser";
 static const char __pyx_k_Randimg_process[] = "Randimg.process";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_src_manifest_json[] = "./src/manifest.json";
@@ -1753,33 +1695,22 @@ static const char __pyx_k_modules_rand_randimg_pyx[] = "modules/rand/randimg.pyx
 static const char __pyx_k_src_manifest_mobile_json[] = "./src/manifest_mobile.json";
 static const char __pyx_k_Randimg___setstate_cython[] = "Randimg.__setstate_cython__";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
-static PyObject *__pyx_n_b_AppleWebKit;
-static PyObject *__pyx_n_b_Chrome;
-static PyObject *__pyx_n_b_Edge;
-static PyObject *__pyx_n_b_Firefox;
-static PyObject *__pyx_n_b_OPR;
-static PyObject *__pyx_n_b_QQBrowser;
+static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_Randimg;
 static PyObject *__pyx_n_s_Randimg___reduce_cython;
 static PyObject *__pyx_n_s_Randimg___setstate_cython;
 static PyObject *__pyx_n_s_Randimg_process;
-static PyObject *__pyx_n_b_SamsungBrowser;
 static PyObject *__pyx_n_s_TypeError;
-static PyObject *__pyx_n_b_UCBrowser;
-static PyObject *__pyx_kp_u_UTF_8;
 static PyObject *__pyx_n_s_cline_in_traceback;
-static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_enter;
 static PyObject *__pyx_n_s_exit;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_iteritems;
 static PyObject *__pyx_n_s_json;
 static PyObject *__pyx_n_s_keys;
 static PyObject *__pyx_n_s_load;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_method;
-static PyObject *__pyx_n_u_mobile;
 static PyObject *__pyx_n_s_modules_rand_randimg;
 static PyObject *__pyx_kp_s_modules_rand_randimg_pyx;
 static PyObject *__pyx_n_s_n;
@@ -1801,439 +1732,53 @@ static PyObject *__pyx_kp_u_src_manifest_mobile_json;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_ua;
-static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, PyObject *__pyx_v_encode, int __pyx_v_n, PyObject *__pyx_v_method); /* proto */
+static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, int __pyx_v_n, PyObject *__pyx_v_method); /* proto */
 static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_7modules_4rand_7randimg_Randimg(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_int_4;
-static PyObject *__pyx_int_10;
-static PyObject *__pyx_int_12;
-static PyObject *__pyx_int_18;
-static PyObject *__pyx_int_19;
-static PyObject *__pyx_int_32;
-static PyObject *__pyx_int_65;
-static PyObject *__pyx_int_605;
-static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_tuple__6;
-static PyObject *__pyx_tuple__8;
-static PyObject *__pyx_tuple__10;
-static PyObject *__pyx_codeobj__7;
-static PyObject *__pyx_codeobj__9;
-static PyObject *__pyx_codeobj__11;
+static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__9;
+static PyObject *__pyx_tuple__11;
+static PyObject *__pyx_codeobj__8;
+static PyObject *__pyx_codeobj__10;
+static PyObject *__pyx_codeobj__12;
 /* Late includes */
 
-/* "modules/rand/randimg.pyx":34
- *         unordered_map[char*, int] version_list_c
+/* "modules/rand/randimg.pyx":20
+ *         vector[string] imgpc, imgmb
  * 
- *     cdef bint check_Version(self,char* ua) nogil:             # <<<<<<<<<<<<<<
- *         cdef unordered_map[char*,int].iterator end = self.version_list_c.end()
- *         cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()
- */
-
-static int __pyx_f_7modules_4rand_7randimg_7Randimg_check_Version(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, char *__pyx_v_ua) {
-  std::unordered_map<char *,int> ::iterator __pyx_v_end;
-  std::unordered_map<char *,int> ::iterator __pyx_v_it;
-  char *__pyx_v_key;
-  int __pyx_v_value;
-  char __pyx_v_uaVersion[5];
-  int __pyx_v_uaVersionIndex;
-  int __pyx_v_uaIndex;
-  std::pair<char *,int>  __pyx_v_derefe;
-  int __pyx_r;
-  int __pyx_t_1;
-  char *__pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-
-  /* "modules/rand/randimg.pyx":35
- * 
- *     cdef bint check_Version(self,char* ua) nogil:
- *         cdef unordered_map[char*,int].iterator end = self.version_list_c.end()             # <<<<<<<<<<<<<<
- *         cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()
- *         cdef char* key
- */
-  __pyx_v_end = __pyx_v_self->version_list_c.end();
-
-  /* "modules/rand/randimg.pyx":36
- *     cdef bint check_Version(self,char* ua) nogil:
- *         cdef unordered_map[char*,int].iterator end = self.version_list_c.end()
- *         cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()             # <<<<<<<<<<<<<<
- *         cdef char* key
- *         cdef int value
- */
-  __pyx_v_it = __pyx_v_self->version_list_c.begin();
-
-  /* "modules/rand/randimg.pyx":40
- *         cdef int value
- *         cdef char[5] uaVersion
- *         cdef int uaVersionIndex = 0             # <<<<<<<<<<<<<<
- *         cdef int uaIndex
- *         memset(uaVersion,0,5)
- */
-  __pyx_v_uaVersionIndex = 0;
-
-  /* "modules/rand/randimg.pyx":42
- *         cdef int uaVersionIndex = 0
- *         cdef int uaIndex
- *         memset(uaVersion,0,5)             # <<<<<<<<<<<<<<
- *         while it != end:
- *             derefe = dereference(it)
- */
-  (void)(memset(__pyx_v_uaVersion, 0, 5));
-
-  /* "modules/rand/randimg.pyx":43
- *         cdef int uaIndex
- *         memset(uaVersion,0,5)
- *         while it != end:             # <<<<<<<<<<<<<<
- *             derefe = dereference(it)
- *             key = derefe.first
- */
-  while (1) {
-    __pyx_t_1 = ((__pyx_v_it != __pyx_v_end) != 0);
-    if (!__pyx_t_1) break;
-
-    /* "modules/rand/randimg.pyx":44
- *         memset(uaVersion,0,5)
- *         while it != end:
- *             derefe = dereference(it)             # <<<<<<<<<<<<<<
- *             key = derefe.first
- *             value = derefe.second
- */
-    __pyx_v_derefe = (*__pyx_v_it);
-
-    /* "modules/rand/randimg.pyx":45
- *         while it != end:
- *             derefe = dereference(it)
- *             key = derefe.first             # <<<<<<<<<<<<<<
- *             value = derefe.second
- *             uaIndex = self.strindex(ua, key)
- */
-    __pyx_t_2 = __pyx_v_derefe.first;
-    __pyx_v_key = __pyx_t_2;
-
-    /* "modules/rand/randimg.pyx":46
- *             derefe = dereference(it)
- *             key = derefe.first
- *             value = derefe.second             # <<<<<<<<<<<<<<
- *             uaIndex = self.strindex(ua, key)
- *             if uaIndex == -1:
- */
-    __pyx_t_3 = __pyx_v_derefe.second;
-    __pyx_v_value = __pyx_t_3;
-
-    /* "modules/rand/randimg.pyx":47
- *             key = derefe.first
- *             value = derefe.second
- *             uaIndex = self.strindex(ua, key)             # <<<<<<<<<<<<<<
- *             if uaIndex == -1:
- *                 # UA
- */
-    __pyx_v_uaIndex = ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->strindex(__pyx_v_self, __pyx_v_ua, __pyx_v_key);
-
-    /* "modules/rand/randimg.pyx":48
- *             value = derefe.second
- *             uaIndex = self.strindex(ua, key)
- *             if uaIndex == -1:             # <<<<<<<<<<<<<<
- *                 # UA
- *                 preincrement(it)
- */
-    __pyx_t_1 = ((__pyx_v_uaIndex == -1L) != 0);
-    if (__pyx_t_1) {
-
-      /* "modules/rand/randimg.pyx":50
- *             if uaIndex == -1:
- *                 # UA
- *                 preincrement(it)             # <<<<<<<<<<<<<<
- *                 continue
- *             uaVersionIndex = uaIndex + strlen(key) + 1
- */
-      (void)((++__pyx_v_it));
-
-      /* "modules/rand/randimg.pyx":51
- *                 # UA
- *                 preincrement(it)
- *                 continue             # <<<<<<<<<<<<<<
- *             uaVersionIndex = uaIndex + strlen(key) + 1
- *             while b'0' <= ua[uaVersionIndex] <= b'9':
- */
-      goto __pyx_L3_continue;
-
-      /* "modules/rand/randimg.pyx":48
- *             value = derefe.second
- *             uaIndex = self.strindex(ua, key)
- *             if uaIndex == -1:             # <<<<<<<<<<<<<<
- *                 # UA
- *                 preincrement(it)
- */
-    }
-
-    /* "modules/rand/randimg.pyx":52
- *                 preincrement(it)
- *                 continue
- *             uaVersionIndex = uaIndex + strlen(key) + 1             # <<<<<<<<<<<<<<
- *             while b'0' <= ua[uaVersionIndex] <= b'9':
- *             # while ua[uaVersionIndex].isdigit():
- */
-    __pyx_v_uaVersionIndex = ((__pyx_v_uaIndex + strlen(__pyx_v_key)) + 1);
-
-    /* "modules/rand/randimg.pyx":53
- *                 continue
- *             uaVersionIndex = uaIndex + strlen(key) + 1
- *             while b'0' <= ua[uaVersionIndex] <= b'9':             # <<<<<<<<<<<<<<
- *             # while ua[uaVersionIndex].isdigit():
- *                 uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]
- */
-    while (1) {
-      __pyx_t_1 = ('0' <= (__pyx_v_ua[__pyx_v_uaVersionIndex]));
-      if (__pyx_t_1) {
-        __pyx_t_1 = ((__pyx_v_ua[__pyx_v_uaVersionIndex]) <= '9');
-      }
-      __pyx_t_4 = (__pyx_t_1 != 0);
-      if (!__pyx_t_4) break;
-
-      /* "modules/rand/randimg.pyx":55
- *             while b'0' <= ua[uaVersionIndex] <= b'9':
- *             # while ua[uaVersionIndex].isdigit():
- *                 uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]             # <<<<<<<<<<<<<<
- *                 uaVersionIndex += 1
- *             if atoi(uaVersion) >= value:
- */
-      (__pyx_v_uaVersion[strlen(__pyx_v_uaVersion)]) = (__pyx_v_ua[__pyx_v_uaVersionIndex]);
-
-      /* "modules/rand/randimg.pyx":56
- *             # while ua[uaVersionIndex].isdigit():
- *                 uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]
- *                 uaVersionIndex += 1             # <<<<<<<<<<<<<<
- *             if atoi(uaVersion) >= value:
- *                 return True
- */
-      __pyx_v_uaVersionIndex = (__pyx_v_uaVersionIndex + 1);
-    }
-
-    /* "modules/rand/randimg.pyx":57
- *                 uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]
- *                 uaVersionIndex += 1
- *             if atoi(uaVersion) >= value:             # <<<<<<<<<<<<<<
- *                 return True
- *             memset(uaVersion,0,5)
- */
-    __pyx_t_4 = ((atoi(__pyx_v_uaVersion) >= __pyx_v_value) != 0);
-    if (__pyx_t_4) {
-
-      /* "modules/rand/randimg.pyx":58
- *                 uaVersionIndex += 1
- *             if atoi(uaVersion) >= value:
- *                 return True             # <<<<<<<<<<<<<<
- *             memset(uaVersion,0,5)
- *             preincrement(it)
- */
-      __pyx_r = 1;
-      goto __pyx_L0;
-
-      /* "modules/rand/randimg.pyx":57
- *                 uaVersion[strlen(uaVersion)] = ua[uaVersionIndex]
- *                 uaVersionIndex += 1
- *             if atoi(uaVersion) >= value:             # <<<<<<<<<<<<<<
- *                 return True
- *             memset(uaVersion,0,5)
- */
-    }
-
-    /* "modules/rand/randimg.pyx":59
- *             if atoi(uaVersion) >= value:
- *                 return True
- *             memset(uaVersion,0,5)             # <<<<<<<<<<<<<<
- *             preincrement(it)
- * 
- */
-    (void)(memset(__pyx_v_uaVersion, 0, 5));
-
-    /* "modules/rand/randimg.pyx":60
- *                 return True
- *             memset(uaVersion,0,5)
- *             preincrement(it)             # <<<<<<<<<<<<<<
- * 
- *     cdef int strindex(self,char* a,char* b) nogil:
- */
-    (void)((++__pyx_v_it));
-    __pyx_L3_continue:;
-  }
-
-  /* "modules/rand/randimg.pyx":34
- *         unordered_map[char*, int] version_list_c
- * 
- *     cdef bint check_Version(self,char* ua) nogil:             # <<<<<<<<<<<<<<
- *         cdef unordered_map[char*,int].iterator end = self.version_list_c.end()
- *         cdef unordered_map[char*,int].iterator it = self.version_list_c.begin()
- */
-
-  /* function exit code */
-  __pyx_r = 0;
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "modules/rand/randimg.pyx":62
- *             preincrement(it)
- * 
- *     cdef int strindex(self,char* a,char* b) nogil:             # <<<<<<<<<<<<<<
- *         cdef int n = 0
- *         cdef int aLen = strlen(a)
- */
-
-static int __pyx_f_7modules_4rand_7randimg_7Randimg_strindex(CYTHON_UNUSED struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, char *__pyx_v_a, char *__pyx_v_b) {
-  CYTHON_UNUSED int __pyx_v_n;
-  int __pyx_v_aLen;
-  int __pyx_v_result;
-  int __pyx_r;
-  int __pyx_t_1;
-  int __pyx_t_2;
-
-  /* "modules/rand/randimg.pyx":63
- * 
- *     cdef int strindex(self,char* a,char* b) nogil:
- *         cdef int n = 0             # <<<<<<<<<<<<<<
- *         cdef int aLen = strlen(a)
- *         cdef int result = -1
- */
-  __pyx_v_n = 0;
-
-  /* "modules/rand/randimg.pyx":64
- *     cdef int strindex(self,char* a,char* b) nogil:
- *         cdef int n = 0
- *         cdef int aLen = strlen(a)             # <<<<<<<<<<<<<<
- *         cdef int result = -1
- *         if aLen > 0:
- */
-  __pyx_v_aLen = strlen(__pyx_v_a);
-
-  /* "modules/rand/randimg.pyx":65
- *         cdef int n = 0
- *         cdef int aLen = strlen(a)
- *         cdef int result = -1             # <<<<<<<<<<<<<<
- *         if aLen > 0:
- *             result = strstr(a, b) - a
- */
-  __pyx_v_result = -1;
-
-  /* "modules/rand/randimg.pyx":66
- *         cdef int aLen = strlen(a)
- *         cdef int result = -1
- *         if aLen > 0:             # <<<<<<<<<<<<<<
- *             result = strstr(a, b) - a
- *         if 0 <= result <= aLen:
- */
-  __pyx_t_1 = ((__pyx_v_aLen > 0) != 0);
-  if (__pyx_t_1) {
-
-    /* "modules/rand/randimg.pyx":67
- *         cdef int result = -1
- *         if aLen > 0:
- *             result = strstr(a, b) - a             # <<<<<<<<<<<<<<
- *         if 0 <= result <= aLen:
- *             return result
- */
-    __pyx_v_result = (strstr(__pyx_v_a, __pyx_v_b) - __pyx_v_a);
-
-    /* "modules/rand/randimg.pyx":66
- *         cdef int aLen = strlen(a)
- *         cdef int result = -1
- *         if aLen > 0:             # <<<<<<<<<<<<<<
- *             result = strstr(a, b) - a
- *         if 0 <= result <= aLen:
- */
-  }
-
-  /* "modules/rand/randimg.pyx":68
- *         if aLen > 0:
- *             result = strstr(a, b) - a
- *         if 0 <= result <= aLen:             # <<<<<<<<<<<<<<
- *             return result
- *         return -1
- */
-  __pyx_t_1 = (0 <= __pyx_v_result);
-  if (__pyx_t_1) {
-    __pyx_t_1 = (__pyx_v_result <= __pyx_v_aLen);
-  }
-  __pyx_t_2 = (__pyx_t_1 != 0);
-  if (__pyx_t_2) {
-
-    /* "modules/rand/randimg.pyx":69
- *             result = strstr(a, b) - a
- *         if 0 <= result <= aLen:
- *             return result             # <<<<<<<<<<<<<<
- *         return -1
- * 
- */
-    __pyx_r = __pyx_v_result;
-    goto __pyx_L0;
-
-    /* "modules/rand/randimg.pyx":68
- *         if aLen > 0:
- *             result = strstr(a, b) - a
- *         if 0 <= result <= aLen:             # <<<<<<<<<<<<<<
- *             return result
- *         return -1
- */
-  }
-
-  /* "modules/rand/randimg.pyx":70
- *         if 0 <= result <= aLen:
- *             return result
- *         return -1             # <<<<<<<<<<<<<<
- * 
- *     cdef string pc(self):
- */
-  __pyx_r = -1;
-  goto __pyx_L0;
-
-  /* "modules/rand/randimg.pyx":62
- *             preincrement(it)
- * 
- *     cdef int strindex(self,char* a,char* b) nogil:             # <<<<<<<<<<<<<<
- *         cdef int n = 0
- *         cdef int aLen = strlen(a)
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "modules/rand/randimg.pyx":72
- *         return -1
- * 
- *     cdef string pc(self):             # <<<<<<<<<<<<<<
+ *     cdef inline string pc(self):             # <<<<<<<<<<<<<<
  *         return self.imgpc[randbelow(self.imgpc_total)]
- *     cdef string moblie(self):
+ * 
  */
 
-static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self) {
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self) {
   std::string __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("pc", 0);
 
-  /* "modules/rand/randimg.pyx":73
+  /* "modules/rand/randimg.pyx":21
  * 
- *     cdef string pc(self):
+ *     cdef inline string pc(self):
  *         return self.imgpc[randbelow(self.imgpc_total)]             # <<<<<<<<<<<<<<
- *     cdef string moblie(self):
- *         return self.imgmb[randbelow(self.imgmb_total)]
+ * 
+ *     cdef inline string moblie(self):
  */
-  __pyx_r = (__pyx_v_self->imgpc[__pyx_f_7modules_4rand_8nazorand_randbelow(__pyx_v_self->imgpc_total, 0)]);
+  __pyx_r = (__pyx_v_self->imgpc[__pyx_f_9nazo_rand_9nazo_rand_randbelow(__pyx_v_self->imgpc_total, 0)]);
   goto __pyx_L0;
 
-  /* "modules/rand/randimg.pyx":72
- *         return -1
+  /* "modules/rand/randimg.pyx":20
+ *         vector[string] imgpc, imgmb
  * 
- *     cdef string pc(self):             # <<<<<<<<<<<<<<
+ *     cdef inline string pc(self):             # <<<<<<<<<<<<<<
  *         return self.imgpc[randbelow(self.imgpc_total)]
- *     cdef string moblie(self):
+ * 
  */
 
   /* function exit code */
@@ -2242,33 +1787,33 @@ static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_pc(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "modules/rand/randimg.pyx":74
- *     cdef string pc(self):
+/* "modules/rand/randimg.pyx":23
  *         return self.imgpc[randbelow(self.imgpc_total)]
- *     cdef string moblie(self):             # <<<<<<<<<<<<<<
+ * 
+ *     cdef inline string moblie(self):             # <<<<<<<<<<<<<<
  *         return self.imgmb[randbelow(self.imgmb_total)]
  * 
  */
 
-static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self) {
+static CYTHON_INLINE std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self) {
   std::string __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("moblie", 0);
 
-  /* "modules/rand/randimg.pyx":75
- *         return self.imgpc[randbelow(self.imgpc_total)]
- *     cdef string moblie(self):
+  /* "modules/rand/randimg.pyx":24
+ * 
+ *     cdef inline string moblie(self):
  *         return self.imgmb[randbelow(self.imgmb_total)]             # <<<<<<<<<<<<<<
  * 
- *     cdef list morePc(self,int n,string imgFormat):
+ *     cdef list generate_img_urls(self, int n, const char* imgFormat, const char* method):
  */
-  __pyx_r = (__pyx_v_self->imgmb[__pyx_f_7modules_4rand_8nazorand_randbelow(__pyx_v_self->imgmb_total, 0)]);
+  __pyx_r = (__pyx_v_self->imgmb[__pyx_f_9nazo_rand_9nazo_rand_randbelow(__pyx_v_self->imgmb_total, 0)]);
   goto __pyx_L0;
 
-  /* "modules/rand/randimg.pyx":74
- *     cdef string pc(self):
+  /* "modules/rand/randimg.pyx":23
  *         return self.imgpc[randbelow(self.imgpc_total)]
- *     cdef string moblie(self):             # <<<<<<<<<<<<<<
+ * 
+ *     cdef inline string moblie(self):             # <<<<<<<<<<<<<<
  *         return self.imgmb[randbelow(self.imgmb_total)]
  * 
  */
@@ -2279,215 +1824,162 @@ static std::string __pyx_f_7modules_4rand_7randimg_7Randimg_moblie(struct __pyx_
   return __pyx_r;
 }
 
-/* "modules/rand/randimg.pyx":77
+/* "modules/rand/randimg.pyx":26
  *         return self.imgmb[randbelow(self.imgmb_total)]
  * 
- *     cdef list morePc(self,int n,string imgFormat):             # <<<<<<<<<<<<<<
+ *     cdef list generate_img_urls(self, int n, const char* imgFormat, const char* method):             # <<<<<<<<<<<<<<
  *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
+ *         urls = [None] * n
  */
 
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_morePc(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, std::string __pyx_v_imgFormat) {
-  CYTHON_UNUSED int __pyx_7genexpr__pyx_v_i;
+static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_generate_img_urls(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, char const *__pyx_v_imgFormat, char const *__pyx_v_method) {
+  int __pyx_v_i;
+  PyObject *__pyx_v_urls = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-  std::string __pyx_t_5;
-  std::string __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("morePc", 0);
+  __Pyx_RefNannySetupContext("generate_img_urls", 0);
 
-  /* "modules/rand/randimg.pyx":79
- *     cdef list morePc(self,int n,string imgFormat):
+  /* "modules/rand/randimg.pyx":28
+ *     cdef list generate_img_urls(self, int n, const char* imgFormat, const char* method):
  *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]             # <<<<<<<<<<<<<<
+ *         urls = [None] * n             # <<<<<<<<<<<<<<
+ *         for i in range(n):
+ *             urls[i] = (PREURL + imgFormat + SLASH + (self.moblie() if strcmp(method, b'mobile') == 0 else self.pc()) + SOURCE + imgFormat).decode('UTF-8')
+ */
+  __pyx_t_1 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  { Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < __pyx_v_n; __pyx_temp++) {
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_1, __pyx_temp, Py_None);
+    }
+  }
+  __pyx_v_urls = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "modules/rand/randimg.pyx":29
+ *         cdef int i
+ *         urls = [None] * n
+ *         for i in range(n):             # <<<<<<<<<<<<<<
+ *             urls[i] = (PREURL + imgFormat + SLASH + (self.moblie() if strcmp(method, b'mobile') == 0 else self.pc()) + SOURCE + imgFormat).decode('UTF-8')
+ *         return urls
+ */
+  __pyx_t_2 = __pyx_v_n;
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "modules/rand/randimg.pyx":30
+ *         urls = [None] * n
+ *         for i in range(n):
+ *             urls[i] = (PREURL + imgFormat + SLASH + (self.moblie() if strcmp(method, b'mobile') == 0 else self.pc()) + SOURCE + imgFormat).decode('UTF-8')             # <<<<<<<<<<<<<<
+ *         return urls
  * 
- *     cdef list moreMoblie(self,int n,string imgFormat):
+ */
+    __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_7modules_4rand_7randimg_PREURL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_imgFormat); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyNumber_Add(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_7modules_4rand_7randimg_SLASH); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_1 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (((strcmp(__pyx_v_method, ((char const *)"mobile")) == 0) != 0)) {
+      __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_f_7modules_4rand_7randimg_7Randimg_moblie(__pyx_v_self)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_5 = __pyx_t_6;
+      __pyx_t_6 = 0;
+    } else {
+      __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_f_7modules_4rand_7randimg_7Randimg_pc(__pyx_v_self)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_5 = __pyx_t_6;
+      __pyx_t_6 = 0;
+    }
+    __pyx_t_6 = PyNumber_Add(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_7modules_4rand_7randimg_SOURCE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_1 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_imgFormat); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyNumber_Add(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_decode_bytes(__pyx_t_6, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_urls, __pyx_v_i, __pyx_t_5, int, 1, __Pyx_PyInt_From_int, 1, 0, 0) < 0)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
+
+  /* "modules/rand/randimg.pyx":31
+ *         for i in range(n):
+ *             urls[i] = (PREURL + imgFormat + SLASH + (self.moblie() if strcmp(method, b'mobile') == 0 else self.pc()) + SOURCE + imgFormat).decode('UTF-8')
+ *         return urls             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef str process(self, bytes ua, int n, bytes method):
  */
   __Pyx_XDECREF(__pyx_r);
-  { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_v_n;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_7genexpr__pyx_v_i = __pyx_t_4;
-      try {
-        __pyx_t_5 = (__pyx_v_7modules_4rand_7randimg_PREURL + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 79, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_6 = (__pyx_t_5 + __pyx_v_7modules_4rand_7randimg_SLASH);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 79, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_5 = (__pyx_t_6 + (__pyx_v_self->imgpc[__pyx_f_7modules_4rand_8nazorand_randbelow(__pyx_v_self->imgpc_total, 0)]));
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 79, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_6 = (__pyx_t_5 + __pyx_v_7modules_4rand_7randimg_SOURCE);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 79, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_5 = (__pyx_t_6 + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 79, __pyx_L1_error)
-      }
-      __pyx_t_7 = __Pyx_decode_cpp_string(__pyx_t_5, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 79, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_7))) __PYX_ERR(0, 79, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    }
-  } /* exit inner scope */
-  __pyx_r = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_INCREF(__pyx_v_urls);
+  __pyx_r = __pyx_v_urls;
   goto __pyx_L0;
 
-  /* "modules/rand/randimg.pyx":77
+  /* "modules/rand/randimg.pyx":26
  *         return self.imgmb[randbelow(self.imgmb_total)]
  * 
- *     cdef list morePc(self,int n,string imgFormat):             # <<<<<<<<<<<<<<
+ *     cdef list generate_img_urls(self, int n, const char* imgFormat, const char* method):             # <<<<<<<<<<<<<<
  *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
+ *         urls = [None] * n
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("modules.rand.randimg.Randimg.morePc", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("modules.rand.randimg.Randimg.generate_img_urls", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_urls);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "modules/rand/randimg.pyx":81
- *         return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
+/* "modules/rand/randimg.pyx":33
+ *         return urls
  * 
- *     cdef list moreMoblie(self,int n,string imgFormat):             # <<<<<<<<<<<<<<
- *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
- */
-
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_moreMoblie(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, int __pyx_v_n, std::string __pyx_v_imgFormat) {
-  CYTHON_UNUSED int __pyx_8genexpr1__pyx_v_i;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  std::string __pyx_t_5;
-  std::string __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("moreMoblie", 0);
-
-  /* "modules/rand/randimg.pyx":83
- *     cdef list moreMoblie(self,int n,string imgFormat):
- *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]             # <<<<<<<<<<<<<<
- * 
- *     cpdef process(self,bytes ua,encode,int n,str method):
- */
-  __Pyx_XDECREF(__pyx_r);
-  { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_v_n;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_8genexpr1__pyx_v_i = __pyx_t_4;
-      try {
-        __pyx_t_5 = (__pyx_v_7modules_4rand_7randimg_PREURL + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 83, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_6 = (__pyx_t_5 + __pyx_v_7modules_4rand_7randimg_SLASH);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 83, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_5 = (__pyx_t_6 + (__pyx_v_self->imgmb[__pyx_f_7modules_4rand_8nazorand_randbelow(__pyx_v_self->imgmb_total, 0)]));
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 83, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_6 = (__pyx_t_5 + __pyx_v_7modules_4rand_7randimg_SOURCE);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 83, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_5 = (__pyx_t_6 + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 83, __pyx_L1_error)
-      }
-      __pyx_t_7 = __Pyx_decode_cpp_string(__pyx_t_5, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 83, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_7))) __PYX_ERR(0, 83, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    }
-  } /* exit inner scope */
-  __pyx_r = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "modules/rand/randimg.pyx":81
- *         return [(PREURL + imgFormat + SLASH + self.imgpc[randbelow(self.imgpc_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
- * 
- *     cdef list moreMoblie(self,int n,string imgFormat):             # <<<<<<<<<<<<<<
- *         cdef int i
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("modules.rand.randimg.Randimg.moreMoblie", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "modules/rand/randimg.pyx":85
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
- * 
- *     cpdef process(self,bytes ua,encode,int n,str method):             # <<<<<<<<<<<<<<
- *     #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
- *         cdef string imgFormat
+ *     cpdef str process(self, bytes ua, int n, bytes method):             # <<<<<<<<<<<<<<
+ *         cdef const char* imgFormat
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
  */
 
 static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, PyObject *__pyx_v_encode, int __pyx_v_n, PyObject *__pyx_v_method, int __pyx_skip_dispatch) {
-  std::string __pyx_v_imgFormat;
+static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, int __pyx_v_n, PyObject *__pyx_v_method, int __pyx_skip_dispatch) {
+  char const *__pyx_v_imgFormat;
+  PyObject *__pyx_v_urls = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2497,11 +1989,11 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
-  std::string __pyx_t_8;
-  char *__pyx_t_9;
-  int __pyx_t_10;
-  int __pyx_t_11;
-  std::string __pyx_t_12;
+  char const *__pyx_t_8;
+  long __pyx_t_9;
+  long __pyx_t_10;
+  long __pyx_t_11;
+  char const *__pyx_t_12;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2515,11 +2007,11 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_process); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_process); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_7modules_4rand_7randimg_7Randimg_1process)) {
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -2536,8 +2028,8 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
         }
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_4)) {
-          PyObject *__pyx_temp[5] = {__pyx_t_5, __pyx_v_ua, __pyx_v_encode, __pyx_t_3, __pyx_v_method};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 4+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+          PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_v_ua, __pyx_t_3, __pyx_v_method};
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2545,15 +2037,15 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
         #endif
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-          PyObject *__pyx_temp[5] = {__pyx_t_5, __pyx_v_ua, __pyx_v_encode, __pyx_t_3, __pyx_v_method};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 4+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+          PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_v_ua, __pyx_t_3, __pyx_v_method};
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         } else
         #endif
         {
-          __pyx_t_7 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 85, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 33, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           if (__pyx_t_5) {
             __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -2561,21 +2053,19 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
           __Pyx_INCREF(__pyx_v_ua);
           __Pyx_GIVEREF(__pyx_v_ua);
           PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_v_ua);
-          __Pyx_INCREF(__pyx_v_encode);
-          __Pyx_GIVEREF(__pyx_v_encode);
-          PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_v_encode);
           __Pyx_GIVEREF(__pyx_t_3);
-          PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_t_3);
+          PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_3);
           __Pyx_INCREF(__pyx_v_method);
           __Pyx_GIVEREF(__pyx_v_method);
-          PyTuple_SET_ITEM(__pyx_t_7, 3+__pyx_t_6, __pyx_v_method);
+          PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_v_method);
           __pyx_t_3 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         }
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_r = __pyx_t_2;
+        if (!(likely(PyUnicode_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 33, __pyx_L1_error)
+        __pyx_r = ((PyObject*)__pyx_t_2);
         __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         goto __pyx_L0;
@@ -2593,263 +2083,80 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
     #endif
   }
 
-  /* "modules/rand/randimg.pyx":88
- *     #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
- *         cdef string imgFormat
- *         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG             # <<<<<<<<<<<<<<
- *         if encode is None:
- *             if method == 'mobile':
+  /* "modules/rand/randimg.pyx":35
+ *     cpdef str process(self, bytes ua, int n, bytes method):
+ *         cdef const char* imgFormat
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG             # <<<<<<<<<<<<<<
+ * 
+ *         n = min(max(n, 1), 10)
  */
-  if (unlikely(__pyx_v_ua == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 88, __pyx_L1_error)
-  }
-  __pyx_t_9 = __Pyx_PyBytes_AsWritableString(__pyx_v_ua); if (unlikely((!__pyx_t_9) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
-  if ((((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->check_Version(__pyx_v_self, __pyx_t_9) != 0)) {
+  if ((__pyx_f_12webp_support_12webp_support_webp_supported(__pyx_v_ua, 0) != 0)) {
     __pyx_t_8 = __pyx_v_7modules_4rand_7randimg_URLWEBP;
   } else {
     __pyx_t_8 = __pyx_v_7modules_4rand_7randimg_URLJPEG;
   }
   __pyx_v_imgFormat = __pyx_t_8;
 
-  /* "modules/rand/randimg.pyx":89
- *         cdef string imgFormat
- *         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
- *         if encode is None:             # <<<<<<<<<<<<<<
- *             if method == 'mobile':
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
+  /* "modules/rand/randimg.pyx":37
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
+ * 
+ *         n = min(max(n, 1), 10)             # <<<<<<<<<<<<<<
+ *         urls = self.generate_img_urls(n, imgFormat, method)
+ *         return ' '.join(urls)
  */
-  __pyx_t_10 = (__pyx_v_encode == Py_None);
-  __pyx_t_11 = (__pyx_t_10 != 0);
-  if (__pyx_t_11) {
-
-    /* "modules/rand/randimg.pyx":90
- *         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
- *         if encode is None:
- *             if method == 'mobile':             # <<<<<<<<<<<<<<
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- */
-    __pyx_t_11 = (__Pyx_PyUnicode_Equals(__pyx_v_method, __pyx_n_u_mobile, Py_EQ)); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
-    __pyx_t_10 = (__pyx_t_11 != 0);
-    if (__pyx_t_10) {
-
-      /* "modules/rand/randimg.pyx":91
- *         if encode is None:
- *             if method == 'mobile':
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat             # <<<<<<<<<<<<<<
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- *         if n > 10:
- */
-      __Pyx_XDECREF(__pyx_r);
-      try {
-        __pyx_t_8 = (__pyx_v_7modules_4rand_7randimg_PREURL + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_12 = (__pyx_t_8 + __pyx_v_7modules_4rand_7randimg_SLASH);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_8 = (__pyx_t_12 + ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->moblie(__pyx_v_self));
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_12 = (__pyx_t_8 + __pyx_v_7modules_4rand_7randimg_SOURCE);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
-      }
-      try {
-        __pyx_t_8 = (__pyx_t_12 + __pyx_v_imgFormat);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
-      }
-      __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_r = __pyx_t_1;
-      __pyx_t_1 = 0;
-      goto __pyx_L0;
-
-      /* "modules/rand/randimg.pyx":90
- *         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
- *         if encode is None:
- *             if method == 'mobile':             # <<<<<<<<<<<<<<
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- */
-    }
-
-    /* "modules/rand/randimg.pyx":92
- *             if method == 'mobile':
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat             # <<<<<<<<<<<<<<
- *         if n > 10:
- *             n = 10
- */
-    __Pyx_XDECREF(__pyx_r);
-    try {
-      __pyx_t_8 = (__pyx_v_7modules_4rand_7randimg_PREURL + __pyx_v_imgFormat);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 92, __pyx_L1_error)
-    }
-    try {
-      __pyx_t_12 = (__pyx_t_8 + __pyx_v_7modules_4rand_7randimg_SLASH);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 92, __pyx_L1_error)
-    }
-    try {
-      __pyx_t_8 = (__pyx_t_12 + ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->pc(__pyx_v_self));
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 92, __pyx_L1_error)
-    }
-    try {
-      __pyx_t_12 = (__pyx_t_8 + __pyx_v_7modules_4rand_7randimg_SOURCE);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 92, __pyx_L1_error)
-    }
-    try {
-      __pyx_t_8 = (__pyx_t_12 + __pyx_v_imgFormat);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 92, __pyx_L1_error)
-    }
-    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_r = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L0;
-
-    /* "modules/rand/randimg.pyx":89
- *         cdef string imgFormat
- *         imgFormat = URLWEBP if self.check_Version(ua) else URLJPEG
- *         if encode is None:             # <<<<<<<<<<<<<<
- *             if method == 'mobile':
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- */
+  __pyx_t_9 = 10;
+  __pyx_t_10 = 1;
+  __pyx_t_6 = __pyx_v_n;
+  if (((__pyx_t_10 > __pyx_t_6) != 0)) {
+    __pyx_t_11 = __pyx_t_10;
+  } else {
+    __pyx_t_11 = __pyx_t_6;
   }
-
-  /* "modules/rand/randimg.pyx":93
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- *         if n > 10:             # <<<<<<<<<<<<<<
- *             n = 10
- *         if n < 1:
- */
-  __pyx_t_10 = ((__pyx_v_n > 10) != 0);
-  if (__pyx_t_10) {
-
-    /* "modules/rand/randimg.pyx":94
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- *         if n > 10:
- *             n = 10             # <<<<<<<<<<<<<<
- *         if n < 1:
- *             n = 1
- */
-    __pyx_v_n = 10;
-
-    /* "modules/rand/randimg.pyx":93
- *                 return PREURL + imgFormat + SLASH + self.moblie() + SOURCE + imgFormat
- *             return PREURL + imgFormat + SLASH + self.pc() + SOURCE + imgFormat
- *         if n > 10:             # <<<<<<<<<<<<<<
- *             n = 10
- *         if n < 1:
- */
+  __pyx_t_10 = __pyx_t_11;
+  if (((__pyx_t_9 < __pyx_t_10) != 0)) {
+    __pyx_t_11 = __pyx_t_9;
+  } else {
+    __pyx_t_11 = __pyx_t_10;
   }
+  __pyx_v_n = __pyx_t_11;
 
-  /* "modules/rand/randimg.pyx":95
- *         if n > 10:
- *             n = 10
- *         if n < 1:             # <<<<<<<<<<<<<<
- *             n = 1
- *         if method == 'mobile':
- */
-  __pyx_t_10 = ((__pyx_v_n < 1) != 0);
-  if (__pyx_t_10) {
-
-    /* "modules/rand/randimg.pyx":96
- *             n = 10
- *         if n < 1:
- *             n = 1             # <<<<<<<<<<<<<<
- *         if method == 'mobile':
- *          return self.moreMoblie(n,imgFormat)
- */
-    __pyx_v_n = 1;
-
-    /* "modules/rand/randimg.pyx":95
- *         if n > 10:
- *             n = 10
- *         if n < 1:             # <<<<<<<<<<<<<<
- *             n = 1
- *         if method == 'mobile':
- */
-  }
-
-  /* "modules/rand/randimg.pyx":97
- *         if n < 1:
- *             n = 1
- *         if method == 'mobile':             # <<<<<<<<<<<<<<
- *          return self.moreMoblie(n,imgFormat)
- *         return self.morePc(n,imgFormat)
- */
-  __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_method, __pyx_n_u_mobile, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
-  __pyx_t_11 = (__pyx_t_10 != 0);
-  if (__pyx_t_11) {
-
-    /* "modules/rand/randimg.pyx":98
- *             n = 1
- *         if method == 'mobile':
- *          return self.moreMoblie(n,imgFormat)             # <<<<<<<<<<<<<<
- *         return self.morePc(n,imgFormat)
+  /* "modules/rand/randimg.pyx":38
+ * 
+ *         n = min(max(n, 1), 10)
+ *         urls = self.generate_img_urls(n, imgFormat, method)             # <<<<<<<<<<<<<<
+ *         return ' '.join(urls)
  * 
  */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->moreMoblie(__pyx_v_self, __pyx_v_n, __pyx_v_imgFormat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_r = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L0;
-
-    /* "modules/rand/randimg.pyx":97
- *         if n < 1:
- *             n = 1
- *         if method == 'mobile':             # <<<<<<<<<<<<<<
- *          return self.moreMoblie(n,imgFormat)
- *         return self.morePc(n,imgFormat)
- */
+  if (unlikely(__pyx_v_method == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
+    __PYX_ERR(0, 38, __pyx_L1_error)
   }
+  __pyx_t_12 = __Pyx_PyBytes_AsString(__pyx_v_method); if (unlikely((!__pyx_t_12) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->generate_img_urls(__pyx_v_self, __pyx_v_n, __pyx_v_imgFormat, __pyx_t_12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_urls = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
 
-  /* "modules/rand/randimg.pyx":99
- *         if method == 'mobile':
- *          return self.moreMoblie(n,imgFormat)
- *         return self.morePc(n,imgFormat)             # <<<<<<<<<<<<<<
+  /* "modules/rand/randimg.pyx":39
+ *         n = min(max(n, 1), 10)
+ *         urls = self.generate_img_urls(n, imgFormat, method)
+ *         return ' '.join(urls)             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7modules_4rand_7randimg_Randimg *)__pyx_v_self->__pyx_vtab)->morePc(__pyx_v_self, __pyx_v_n, __pyx_v_imgFormat); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u_, __pyx_v_urls); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
+  __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "modules/rand/randimg.pyx":85
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
+  /* "modules/rand/randimg.pyx":33
+ *         return urls
  * 
- *     cpdef process(self,bytes ua,encode,int n,str method):             # <<<<<<<<<<<<<<
- *     #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
- *         cdef string imgFormat
+ *     cpdef str process(self, bytes ua, int n, bytes method):             # <<<<<<<<<<<<<<
+ *         cdef const char* imgFormat
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
  */
 
   /* function exit code */
@@ -2863,6 +2170,7 @@ static PyObject *__pyx_f_7modules_4rand_7randimg_7Randimg_process(struct __pyx_o
   __Pyx_AddTraceback("modules.rand.randimg.Randimg.process", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_urls);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2873,7 +2181,6 @@ static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__
 static PyMethodDef __pyx_mdef_7modules_4rand_7randimg_7Randimg_1process = {"process", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7modules_4rand_7randimg_7Randimg_1process, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_ua = 0;
-  PyObject *__pyx_v_encode = 0;
   int __pyx_v_n;
   PyObject *__pyx_v_method = 0;
   int __pyx_lineno = 0;
@@ -2883,14 +2190,12 @@ static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("process (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ua,&__pyx_n_s_encode,&__pyx_n_s_n,&__pyx_n_s_method,0};
-    PyObject* values[4] = {0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ua,&__pyx_n_s_n,&__pyx_n_s_method,0};
+    PyObject* values[3] = {0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         CYTHON_FALLTHROUGH;
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
@@ -2907,50 +2212,42 @@ static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_encode)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("process", 1, 4, 4, 1); __PYX_ERR(0, 85, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("process", 1, 3, 3, 1); __PYX_ERR(0, 33, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_method)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("process", 1, 4, 4, 2); __PYX_ERR(0, 85, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_method)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("process", 1, 4, 4, 3); __PYX_ERR(0, 85, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("process", 1, 3, 3, 2); __PYX_ERR(0, 33, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "process") < 0)) __PYX_ERR(0, 85, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "process") < 0)) __PYX_ERR(0, 33, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_ua = ((PyObject*)values[0]);
-    __pyx_v_encode = values[1];
-    __pyx_v_n = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L3_error)
-    __pyx_v_method = ((PyObject*)values[3]);
+    __pyx_v_n = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L3_error)
+    __pyx_v_method = ((PyObject*)values[2]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("process", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 85, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("process", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 33, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("modules.rand.randimg.Randimg.process", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ua), (&PyBytes_Type), 1, "ua", 1))) __PYX_ERR(0, 85, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_method), (&PyUnicode_Type), 1, "method", 1))) __PYX_ERR(0, 85, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7modules_4rand_7randimg_7Randimg_process(((struct __pyx_obj_7modules_4rand_7randimg_Randimg *)__pyx_v_self), __pyx_v_ua, __pyx_v_encode, __pyx_v_n, __pyx_v_method);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ua), (&PyBytes_Type), 1, "ua", 1))) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_method), (&PyBytes_Type), 1, "method", 1))) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_r = __pyx_pf_7modules_4rand_7randimg_7Randimg_process(((struct __pyx_obj_7modules_4rand_7randimg_Randimg *)__pyx_v_self), __pyx_v_ua, __pyx_v_n, __pyx_v_method);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2961,7 +2258,7 @@ static PyObject *__pyx_pw_7modules_4rand_7randimg_7Randimg_1process(PyObject *__
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, PyObject *__pyx_v_encode, int __pyx_v_n, PyObject *__pyx_v_method) {
+static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self, PyObject *__pyx_v_ua, int __pyx_v_n, PyObject *__pyx_v_method) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2970,7 +2267,7 @@ static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("process", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7modules_4rand_7randimg_7Randimg_process(__pyx_v_self, __pyx_v_ua, __pyx_v_encode, __pyx_v_n, __pyx_v_method, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7modules_4rand_7randimg_7Randimg_process(__pyx_v_self, __pyx_v_ua, __pyx_v_n, __pyx_v_method, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2987,12 +2284,12 @@ static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_process(struct __pyx_
   return __pyx_r;
 }
 
-/* "modules/rand/randimg.pyx":101
- *         return self.morePc(n,imgFormat)
+/* "modules/rand/randimg.pyx":41
+ *         return ' '.join(urls)
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:
- *             temp = json.load(pc)
  */
 
 /* Python wrapper */
@@ -3012,13 +2309,10 @@ static int __pyx_pw_7modules_4rand_7randimg_7Randimg_3__cinit__(PyObject *__pyx_
 }
 
 static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj_7modules_4rand_7randimg_Randimg *__pyx_v_self) {
+  PyObject *__pyx_v_key = 0;
   PyObject *__pyx_v_pc = NULL;
   PyObject *__pyx_v_temp = NULL;
-  PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_v_mb = NULL;
-  PyObject *__pyx_v_version_list = NULL;
-  PyObject *__pyx_v_k = NULL;
-  PyObject *__pyx_v_v = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3037,26 +2331,24 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
   PyObject *__pyx_t_14 = NULL;
   int __pyx_t_15;
   int __pyx_t_16;
-  char *__pyx_t_17;
-  int __pyx_t_18;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "modules/rand/randimg.pyx":102
- * 
+  /* "modules/rand/randimg.pyx":43
  *     def __cinit__(self):
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:             # <<<<<<<<<<<<<<
  *             temp = json.load(pc)
- *             for i in temp.keys():
+ *             for key in temp.keys():
  */
   /*with:*/ {
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L3_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3070,7 +2362,7 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L3_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = __pyx_t_3;
@@ -3088,16 +2380,16 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           __pyx_v_pc = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":103
- *     def __cinit__(self):
+          /* "modules/rand/randimg.pyx":44
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:
  *             temp = json.load(pc)             # <<<<<<<<<<<<<<
- *             for i in temp.keys():
- *                 self.imgpc.push_back(i.encode('UTF-8'))
+ *             for key in temp.keys():
+ *                 self.imgpc.push_back(key.encode('UTF-8'))
  */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L7_error)
+          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __pyx_t_1 = NULL;
@@ -3112,25 +2404,25 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           }
           __pyx_t_4 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_v_pc) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_pc);
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L7_error)
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __pyx_v_temp = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":104
+          /* "modules/rand/randimg.pyx":45
  *         with open("./src/manifest.json") as pc:
  *             temp = json.load(pc)
- *             for i in temp.keys():             # <<<<<<<<<<<<<<
- *                 self.imgpc.push_back(i.encode('UTF-8'))
+ *             for key in temp.keys():             # <<<<<<<<<<<<<<
+ *                 self.imgpc.push_back(key.encode('UTF-8'))
  *             self.imgpc_total = self.imgpc.size()
  */
           __pyx_t_9 = 0;
           if (unlikely(__pyx_v_temp == Py_None)) {
             PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "keys");
-            __PYX_ERR(0, 104, __pyx_L7_error)
+            __PYX_ERR(0, 45, __pyx_L7_error)
           }
-          __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_temp, 0, __pyx_n_s_keys, (&__pyx_t_10), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 104, __pyx_L7_error)
+          __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_temp, 0, __pyx_n_s_keys, (&__pyx_t_10), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_XDECREF(__pyx_t_4);
           __pyx_t_4 = __pyx_t_3;
@@ -3138,61 +2430,51 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           while (1) {
             __pyx_t_12 = __Pyx_dict_iter_next(__pyx_t_4, __pyx_t_10, &__pyx_t_9, &__pyx_t_3, NULL, NULL, __pyx_t_11);
             if (unlikely(__pyx_t_12 == 0)) break;
-            if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 104, __pyx_L7_error)
+            if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 45, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_3);
+            if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 45, __pyx_L7_error)
+            __Pyx_XDECREF_SET(__pyx_v_key, ((PyObject*)__pyx_t_3));
             __pyx_t_3 = 0;
 
-            /* "modules/rand/randimg.pyx":105
+            /* "modules/rand/randimg.pyx":46
  *             temp = json.load(pc)
- *             for i in temp.keys():
- *                 self.imgpc.push_back(i.encode('UTF-8'))             # <<<<<<<<<<<<<<
+ *             for key in temp.keys():
+ *                 self.imgpc.push_back(key.encode('UTF-8'))             # <<<<<<<<<<<<<<
  *             self.imgpc_total = self.imgpc.size()
- *         with open("./src/manifest_mobile.json") as mb:
+ * 
  */
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_i, __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_5 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-              __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_1);
-              if (likely(__pyx_t_5)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-                __Pyx_INCREF(__pyx_t_5);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_1, function);
-              }
+            if (unlikely(__pyx_v_key == Py_None)) {
+              PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
+              __PYX_ERR(0, 46, __pyx_L7_error)
             }
-            __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_5, __pyx_kp_u_UTF_8) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_kp_u_UTF_8);
-            __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-            if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L7_error)
+            __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_key); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 105, __pyx_L7_error)
+            __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L7_error)
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
             try {
               __pyx_v_self->imgpc.push_back(__pyx_t_13);
             } catch(...) {
               __Pyx_CppExn2PyErr();
-              __PYX_ERR(0, 105, __pyx_L7_error)
+              __PYX_ERR(0, 46, __pyx_L7_error)
             }
           }
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":106
- *             for i in temp.keys():
- *                 self.imgpc.push_back(i.encode('UTF-8'))
+          /* "modules/rand/randimg.pyx":47
+ *             for key in temp.keys():
+ *                 self.imgpc.push_back(key.encode('UTF-8'))
  *             self.imgpc_total = self.imgpc.size()             # <<<<<<<<<<<<<<
+ * 
  *         with open("./src/manifest_mobile.json") as mb:
- *             temp = json.load(mb)
  */
           __pyx_v_self->imgpc_total = __pyx_v_self->imgpc.size();
 
-          /* "modules/rand/randimg.pyx":102
- * 
+          /* "modules/rand/randimg.pyx":43
  *     def __cinit__(self):
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:             # <<<<<<<<<<<<<<
  *             temp = json.load(pc)
- *             for i in temp.keys():
+ *             for key in temp.keys():
  */
         }
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -3206,20 +2488,20 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("modules.rand.randimg.Randimg.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 102, __pyx_L9_except_error)
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 43, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L9_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 102, __pyx_L9_except_error)
+          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 43, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_14);
           __pyx_t_15 = __Pyx_PyObject_IsTrue(__pyx_t_14);
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-          if (__pyx_t_15 < 0) __PYX_ERR(0, 102, __pyx_L9_except_error)
+          if (__pyx_t_15 < 0) __PYX_ERR(0, 43, __pyx_L9_except_error)
           __pyx_t_16 = ((!(__pyx_t_15 != 0)) != 0);
           if (__pyx_t_16) {
             __Pyx_GIVEREF(__pyx_t_4);
@@ -3227,7 +2509,7 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
             __Pyx_XGIVEREF(__pyx_t_1);
             __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_3, __pyx_t_1);
             __pyx_t_4 = 0; __pyx_t_3 = 0; __pyx_t_1 = 0; 
-            __PYX_ERR(0, 102, __pyx_L9_except_error)
+            __PYX_ERR(0, 43, __pyx_L9_except_error)
           }
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3251,9 +2533,9 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_2) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__3, NULL);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 43, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
@@ -3268,19 +2550,19 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     __pyx_L18:;
   }
 
-  /* "modules/rand/randimg.pyx":107
- *                 self.imgpc.push_back(i.encode('UTF-8'))
+  /* "modules/rand/randimg.pyx":49
  *             self.imgpc_total = self.imgpc.size()
+ * 
  *         with open("./src/manifest_mobile.json") as mb:             # <<<<<<<<<<<<<<
  *             temp = json.load(mb)
- *             for i in temp.keys():
+ *             for key in temp.keys():
  */
   /*with:*/ {
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L19_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L19_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3294,7 +2576,7 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L19_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L19_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = __pyx_t_3;
@@ -3312,16 +2594,16 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           __pyx_v_mb = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":108
- *             self.imgpc_total = self.imgpc.size()
+          /* "modules/rand/randimg.pyx":50
+ * 
  *         with open("./src/manifest_mobile.json") as mb:
  *             temp = json.load(mb)             # <<<<<<<<<<<<<<
- *             for i in temp.keys():
- *                 self.imgmb.push_back(i.encode('UTF-8'))
+ *             for key in temp.keys():
+ *                 self.imgmb.push_back(key.encode('UTF-8'))
  */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L23_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L23_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L23_error)
+          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L23_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __pyx_t_1 = NULL;
@@ -3336,25 +2618,25 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           }
           __pyx_t_4 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_v_mb) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_mb);
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L23_error)
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L23_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":109
+          /* "modules/rand/randimg.pyx":51
  *         with open("./src/manifest_mobile.json") as mb:
  *             temp = json.load(mb)
- *             for i in temp.keys():             # <<<<<<<<<<<<<<
- *                 self.imgmb.push_back(i.encode('UTF-8'))
+ *             for key in temp.keys():             # <<<<<<<<<<<<<<
+ *                 self.imgmb.push_back(key.encode('UTF-8'))
  *             self.imgmb_total = self.imgmb.size()
  */
           __pyx_t_10 = 0;
           if (unlikely(__pyx_v_temp == Py_None)) {
             PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "keys");
-            __PYX_ERR(0, 109, __pyx_L23_error)
+            __PYX_ERR(0, 51, __pyx_L23_error)
           }
-          __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_temp, 0, __pyx_n_s_keys, (&__pyx_t_9), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L23_error)
+          __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_temp, 0, __pyx_n_s_keys, (&__pyx_t_9), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L23_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_XDECREF(__pyx_t_4);
           __pyx_t_4 = __pyx_t_3;
@@ -3362,61 +2644,48 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
           while (1) {
             __pyx_t_12 = __Pyx_dict_iter_next(__pyx_t_4, __pyx_t_9, &__pyx_t_10, &__pyx_t_3, NULL, NULL, __pyx_t_11);
             if (unlikely(__pyx_t_12 == 0)) break;
-            if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 109, __pyx_L23_error)
+            if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 51, __pyx_L23_error)
             __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_3);
+            if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 51, __pyx_L23_error)
+            __Pyx_XDECREF_SET(__pyx_v_key, ((PyObject*)__pyx_t_3));
             __pyx_t_3 = 0;
 
-            /* "modules/rand/randimg.pyx":110
+            /* "modules/rand/randimg.pyx":52
  *             temp = json.load(mb)
- *             for i in temp.keys():
- *                 self.imgmb.push_back(i.encode('UTF-8'))             # <<<<<<<<<<<<<<
+ *             for key in temp.keys():
+ *                 self.imgmb.push_back(key.encode('UTF-8'))             # <<<<<<<<<<<<<<
  *             self.imgmb_total = self.imgmb.size()
- * 
  */
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_i, __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L23_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_5 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-              __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_1);
-              if (likely(__pyx_t_5)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-                __Pyx_INCREF(__pyx_t_5);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_1, function);
-              }
+            if (unlikely(__pyx_v_key == Py_None)) {
+              PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
+              __PYX_ERR(0, 52, __pyx_L23_error)
             }
-            __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_5, __pyx_kp_u_UTF_8) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_kp_u_UTF_8);
-            __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-            if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L23_error)
+            __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_key); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L23_error)
             __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 110, __pyx_L23_error)
+            __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L23_error)
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
             try {
               __pyx_v_self->imgmb.push_back(__pyx_t_13);
             } catch(...) {
               __Pyx_CppExn2PyErr();
-              __PYX_ERR(0, 110, __pyx_L23_error)
+              __PYX_ERR(0, 52, __pyx_L23_error)
             }
           }
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "modules/rand/randimg.pyx":111
- *             for i in temp.keys():
- *                 self.imgmb.push_back(i.encode('UTF-8'))
+          /* "modules/rand/randimg.pyx":53
+ *             for key in temp.keys():
+ *                 self.imgmb.push_back(key.encode('UTF-8'))
  *             self.imgmb_total = self.imgmb.size()             # <<<<<<<<<<<<<<
- * 
- *         version_list = {b'Firefox':65,
  */
           __pyx_v_self->imgmb_total = __pyx_v_self->imgmb.size();
 
-          /* "modules/rand/randimg.pyx":107
- *                 self.imgpc.push_back(i.encode('UTF-8'))
+          /* "modules/rand/randimg.pyx":49
  *             self.imgpc_total = self.imgpc.size()
+ * 
  *         with open("./src/manifest_mobile.json") as mb:             # <<<<<<<<<<<<<<
  *             temp = json.load(mb)
- *             for i in temp.keys():
+ *             for key in temp.keys():
  */
         }
         __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -3430,20 +2699,20 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("modules.rand.randimg.Randimg.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 107, __pyx_L25_except_error)
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 49, __pyx_L25_except_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L25_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L25_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 107, __pyx_L25_except_error)
+          if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 49, __pyx_L25_except_error)
           __Pyx_GOTREF(__pyx_t_14);
           __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_14);
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-          if (__pyx_t_16 < 0) __PYX_ERR(0, 107, __pyx_L25_except_error)
+          if (__pyx_t_16 < 0) __PYX_ERR(0, 49, __pyx_L25_except_error)
           __pyx_t_15 = ((!(__pyx_t_16 != 0)) != 0);
           if (__pyx_t_15) {
             __Pyx_GIVEREF(__pyx_t_4);
@@ -3451,7 +2720,7 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
             __Pyx_XGIVEREF(__pyx_t_1);
             __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_3, __pyx_t_1);
             __pyx_t_4 = 0; __pyx_t_3 = 0; __pyx_t_1 = 0; 
-            __PYX_ERR(0, 107, __pyx_L25_except_error)
+            __PYX_ERR(0, 49, __pyx_L25_except_error)
           }
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3475,9 +2744,9 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL);
+          __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__3, NULL);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L1_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
@@ -3492,85 +2761,12 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
     __pyx_L34:;
   }
 
-  /* "modules/rand/randimg.pyx":113
- *             self.imgmb_total = self.imgmb.size()
- * 
- *         version_list = {b'Firefox':65,             # <<<<<<<<<<<<<<
- *                             b'Chrome':32,
- *                             b'Edge':18,
- */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_Firefox, __pyx_int_65) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_Chrome, __pyx_int_32) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_Edge, __pyx_int_18) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_AppleWebKit, __pyx_int_605) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_OPR, __pyx_int_19) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_UCBrowser, __pyx_int_12) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_SamsungBrowser, __pyx_int_4) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_b_QQBrowser, __pyx_int_10) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
-  __pyx_v_version_list = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "modules/rand/randimg.pyx":122
- *                             b'QQBrowser':10,
- *                         }
- *         for k ,v in version_list.iteritems():             # <<<<<<<<<<<<<<
- *             self.version_list_c[k] = v
- *         version_list.clear()
- */
-  __pyx_t_9 = 0;
-  __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_version_list, 1, __pyx_n_s_iteritems, (&__pyx_t_10), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_1);
-  __pyx_t_1 = __pyx_t_3;
-  __pyx_t_3 = 0;
-  while (1) {
-    __pyx_t_12 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_10, &__pyx_t_9, &__pyx_t_3, &__pyx_t_4, NULL, __pyx_t_11);
-    if (unlikely(__pyx_t_12 == 0)) break;
-    if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 122, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_3);
-    __pyx_t_3 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_4);
-    __pyx_t_4 = 0;
-
-    /* "modules/rand/randimg.pyx":123
- *                         }
- *         for k ,v in version_list.iteritems():
- *             self.version_list_c[k] = v             # <<<<<<<<<<<<<<
- *         version_list.clear()
- *         del version_list
- */
-    __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_v); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
-    __pyx_t_17 = __Pyx_PyObject_AsWritableString(__pyx_v_k); if (unlikely((!__pyx_t_17) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
-    (__pyx_v_self->version_list_c[__pyx_t_17]) = __pyx_t_12;
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "modules/rand/randimg.pyx":124
- *         for k ,v in version_list.iteritems():
- *             self.version_list_c[k] = v
- *         version_list.clear()             # <<<<<<<<<<<<<<
- *         del version_list
- */
-  __pyx_t_18 = __Pyx_PyDict_Clear(__pyx_v_version_list); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 124, __pyx_L1_error)
-
-  /* "modules/rand/randimg.pyx":125
- *             self.version_list_c[k] = v
- *         version_list.clear()
- *         del version_list             # <<<<<<<<<<<<<<
- */
-  __Pyx_DECREF(__pyx_v_version_list);
-  __pyx_v_version_list = NULL;
-
-  /* "modules/rand/randimg.pyx":101
- *         return self.morePc(n,imgFormat)
+  /* "modules/rand/randimg.pyx":41
+ *         return ' '.join(urls)
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:
- *             temp = json.load(pc)
  */
 
   /* function exit code */
@@ -3584,13 +2780,10 @@ static int __pyx_pf_7modules_4rand_7randimg_7Randimg_2__cinit__(struct __pyx_obj
   __Pyx_AddTraceback("modules.rand.randimg.Randimg.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_key);
   __Pyx_XDECREF(__pyx_v_pc);
   __Pyx_XDECREF(__pyx_v_temp);
-  __Pyx_XDECREF(__pyx_v_i);
   __Pyx_XDECREF(__pyx_v_mb);
-  __Pyx_XDECREF(__pyx_v_version_list);
-  __Pyx_XDECREF(__pyx_v_k);
-  __Pyx_XDECREF(__pyx_v_v);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3630,7 +2823,7 @@ static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_4__reduce_cython__(CY
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3687,7 +2880,7 @@ static PyObject *__pyx_pf_7modules_4rand_7randimg_7Randimg_6__setstate_cython__(
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4038,7 +3231,6 @@ static PyObject *__pyx_tp_new_7modules_4rand_7randimg_Randimg(PyTypeObject *t, C
   p->__pyx_vtab = __pyx_vtabptr_7modules_4rand_7randimg_Randimg;
   new((void*)&(p->imgpc)) std::vector<std::string> ();
   new((void*)&(p->imgmb)) std::vector<std::string> ();
-  new((void*)&(p->version_list_c)) std::unordered_map<char *,int> ();
   if (unlikely(__pyx_pw_7modules_4rand_7randimg_7Randimg_3__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
   bad:
@@ -4055,7 +3247,6 @@ static void __pyx_tp_dealloc_7modules_4rand_7randimg_Randimg(PyObject *o) {
   #endif
   __Pyx_call_destructor(p->imgpc);
   __Pyx_call_destructor(p->imgmb);
-  __Pyx_call_destructor(p->version_list_c);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
@@ -4183,33 +3374,22 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_n_b_AppleWebKit, __pyx_k_AppleWebKit, sizeof(__pyx_k_AppleWebKit), 0, 0, 0, 1},
-  {&__pyx_n_b_Chrome, __pyx_k_Chrome, sizeof(__pyx_k_Chrome), 0, 0, 0, 1},
-  {&__pyx_n_b_Edge, __pyx_k_Edge, sizeof(__pyx_k_Edge), 0, 0, 0, 1},
-  {&__pyx_n_b_Firefox, __pyx_k_Firefox, sizeof(__pyx_k_Firefox), 0, 0, 0, 1},
-  {&__pyx_n_b_OPR, __pyx_k_OPR, sizeof(__pyx_k_OPR), 0, 0, 0, 1},
-  {&__pyx_n_b_QQBrowser, __pyx_k_QQBrowser, sizeof(__pyx_k_QQBrowser), 0, 0, 0, 1},
+  {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
   {&__pyx_n_s_Randimg, __pyx_k_Randimg, sizeof(__pyx_k_Randimg), 0, 0, 1, 1},
   {&__pyx_n_s_Randimg___reduce_cython, __pyx_k_Randimg___reduce_cython, sizeof(__pyx_k_Randimg___reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_Randimg___setstate_cython, __pyx_k_Randimg___setstate_cython, sizeof(__pyx_k_Randimg___setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_Randimg_process, __pyx_k_Randimg_process, sizeof(__pyx_k_Randimg_process), 0, 0, 1, 1},
-  {&__pyx_n_b_SamsungBrowser, __pyx_k_SamsungBrowser, sizeof(__pyx_k_SamsungBrowser), 0, 0, 0, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
-  {&__pyx_n_b_UCBrowser, __pyx_k_UCBrowser, sizeof(__pyx_k_UCBrowser), 0, 0, 0, 1},
-  {&__pyx_kp_u_UTF_8, __pyx_k_UTF_8, sizeof(__pyx_k_UTF_8), 0, 1, 0, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-  {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_enter, __pyx_k_enter, sizeof(__pyx_k_enter), 0, 0, 1, 1},
   {&__pyx_n_s_exit, __pyx_k_exit, sizeof(__pyx_k_exit), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_iteritems, __pyx_k_iteritems, sizeof(__pyx_k_iteritems), 0, 0, 1, 1},
   {&__pyx_n_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 1},
   {&__pyx_n_s_keys, __pyx_k_keys, sizeof(__pyx_k_keys), 0, 0, 1, 1},
   {&__pyx_n_s_load, __pyx_k_load, sizeof(__pyx_k_load), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_method, __pyx_k_method, sizeof(__pyx_k_method), 0, 0, 1, 1},
-  {&__pyx_n_u_mobile, __pyx_k_mobile, sizeof(__pyx_k_mobile), 0, 1, 0, 1},
   {&__pyx_n_s_modules_rand_randimg, __pyx_k_modules_rand_randimg, sizeof(__pyx_k_modules_rand_randimg), 0, 0, 1, 1},
   {&__pyx_kp_s_modules_rand_randimg_pyx, __pyx_k_modules_rand_randimg_pyx, sizeof(__pyx_k_modules_rand_randimg_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
@@ -4234,8 +3414,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 79, __pyx_L1_error)
-  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -4246,30 +3426,30 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "modules/rand/randimg.pyx":102
- * 
+  /* "modules/rand/randimg.pyx":43
  *     def __cinit__(self):
+ *         cdef str key
  *         with open("./src/manifest.json") as pc:             # <<<<<<<<<<<<<<
  *             temp = json.load(pc)
- *             for i in temp.keys():
+ *             for key in temp.keys():
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_src_manifest_json); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 102, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple_);
-  __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_tuple__2 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_src_manifest_json); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-
-  /* "modules/rand/randimg.pyx":107
- *                 self.imgpc.push_back(i.encode('UTF-8'))
- *             self.imgpc_total = self.imgpc.size()
- *         with open("./src/manifest_mobile.json") as mb:             # <<<<<<<<<<<<<<
- *             temp = json.load(mb)
- *             for i in temp.keys():
- */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_src_manifest_mobile_json); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
+
+  /* "modules/rand/randimg.pyx":49
+ *             self.imgpc_total = self.imgpc.size()
+ * 
+ *         with open("./src/manifest_mobile.json") as mb:             # <<<<<<<<<<<<<<
+ *             temp = json.load(mb)
+ *             for key in temp.keys():
+ */
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_src_manifest_mobile_json); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -4277,40 +3457,40 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-
-  /* "modules/rand/randimg.pyx":85
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
- * 
- *     cpdef process(self,bytes ua,encode,int n,str method):             # <<<<<<<<<<<<<<
- *     #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
- *         cdef string imgFormat
- */
-  __pyx_tuple__6 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_ua, __pyx_n_s_encode, __pyx_n_s_n, __pyx_n_s_method); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(5, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_modules_rand_randimg_pyx, __pyx_n_s_process, 85, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 85, __pyx_L1_error)
+
+  /* "modules/rand/randimg.pyx":33
+ *         return urls
+ * 
+ *     cpdef str process(self, bytes ua, int n, bytes method):             # <<<<<<<<<<<<<<
+ *         cdef const char* imgFormat
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
+ */
+  __pyx_tuple__7 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_ua, __pyx_n_s_n, __pyx_n_s_method); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_modules_rand_randimg_pyx, __pyx_n_s_process, 33, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 33, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_reduce_cython, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(1, 1, __pyx_L1_error)
 
   /* "(tree fragment)":3
  * def __reduce_cython__(self):
@@ -4318,10 +3498,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pyx_state); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 3, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 3, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pyx_state); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 3, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4331,14 +3511,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_4 = PyInt_FromLong(4); if (unlikely(!__pyx_int_4)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_10 = PyInt_FromLong(10); if (unlikely(!__pyx_int_10)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_12 = PyInt_FromLong(12); if (unlikely(!__pyx_int_12)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_18 = PyInt_FromLong(18); if (unlikely(!__pyx_int_18)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_19 = PyInt_FromLong(19); if (unlikely(!__pyx_int_19)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_32 = PyInt_FromLong(32); if (unlikely(!__pyx_int_32)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_65 = PyInt_FromLong(65); if (unlikely(!__pyx_int_65)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_605 = PyInt_FromLong(605); if (unlikely(!__pyx_int_605)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4384,23 +3556,20 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   __pyx_vtabptr_7modules_4rand_7randimg_Randimg = &__pyx_vtable_7modules_4rand_7randimg_Randimg;
-  __pyx_vtable_7modules_4rand_7randimg_Randimg.check_Version = (int (*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, char *))__pyx_f_7modules_4rand_7randimg_7Randimg_check_Version;
-  __pyx_vtable_7modules_4rand_7randimg_Randimg.strindex = (int (*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, char *, char *))__pyx_f_7modules_4rand_7randimg_7Randimg_strindex;
   __pyx_vtable_7modules_4rand_7randimg_Randimg.pc = (std::string (*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *))__pyx_f_7modules_4rand_7randimg_7Randimg_pc;
   __pyx_vtable_7modules_4rand_7randimg_Randimg.moblie = (std::string (*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *))__pyx_f_7modules_4rand_7randimg_7Randimg_moblie;
-  __pyx_vtable_7modules_4rand_7randimg_Randimg.morePc = (PyObject *(*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, std::string))__pyx_f_7modules_4rand_7randimg_7Randimg_morePc;
-  __pyx_vtable_7modules_4rand_7randimg_Randimg.moreMoblie = (PyObject *(*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, std::string))__pyx_f_7modules_4rand_7randimg_7Randimg_moreMoblie;
-  __pyx_vtable_7modules_4rand_7randimg_Randimg.process = (PyObject *(*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, PyObject *, PyObject *, int, PyObject *, int __pyx_skip_dispatch))__pyx_f_7modules_4rand_7randimg_7Randimg_process;
-  if (PyType_Ready(&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_vtable_7modules_4rand_7randimg_Randimg.generate_img_urls = (PyObject *(*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, int, char const *, char const *))__pyx_f_7modules_4rand_7randimg_7Randimg_generate_img_urls;
+  __pyx_vtable_7modules_4rand_7randimg_Randimg.process = (PyObject *(*)(struct __pyx_obj_7modules_4rand_7randimg_Randimg *, PyObject *, int, PyObject *, int __pyx_skip_dispatch))__pyx_f_7modules_4rand_7randimg_7Randimg_process;
+  if (PyType_Ready(&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7modules_4rand_7randimg_Randimg.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7modules_4rand_7randimg_Randimg.tp_dictoffset && __pyx_type_7modules_4rand_7randimg_Randimg.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7modules_4rand_7randimg_Randimg.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_7modules_4rand_7randimg_Randimg.tp_dict, __pyx_vtabptr_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Randimg, (PyObject *)&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_7modules_4rand_7randimg_Randimg.tp_dict, __pyx_vtabptr_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Randimg, (PyObject *)&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7modules_4rand_7randimg_Randimg) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __pyx_ptype_7modules_4rand_7randimg_Randimg = &__pyx_type_7modules_4rand_7randimg_Randimg;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -4433,9 +3602,13 @@ static int __Pyx_modinit_function_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_import_code", 0);
   /*--- Function import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("modules.rand.nazorand"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("webp_support.webp_support"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "randbelow", (void (**)(void))&__pyx_f_7modules_4rand_8nazorand_randbelow, "int (int, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "webp_supported", (void (**)(void))&__pyx_f_12webp_support_12webp_support_webp_supported, "int (PyObject *, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("nazo_rand.nazo_rand"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportFunction(__pyx_t_1, "randbelow", (void (**)(void))&__pyx_f_9nazo_rand_9nazo_rand_randbelow, "int (int, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -4540,7 +3713,6 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_randimg(PyObject *__pyx_pyinit_mod
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
-  std::string __pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4646,103 +3818,71 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "modules/rand/randimg.pyx":12
- * #include './nazorand.pyx'
- * from .nazorand cimport randbelow
+  /* "modules/rand/randimg.pyx":1
  * import json             # <<<<<<<<<<<<<<
- * cimport cython
- * ctypedef fused str_or_bool:
+ * from libcpp.vector cimport vector
+ * from libcpp.string cimport string
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_json, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_json, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_json, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_json, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "modules/rand/randimg.pyx":21
- *     list
+  /* "modules/rand/randimg.pyx":9
+ * 
  * cdef:
- *     string URLWEBP = string(b'webp')             # <<<<<<<<<<<<<<
- *     string PREURL = string(b'https://file.nmxc.ltd/')
- *     string URLJPEG = string(b'jpeg')
+ *     const char* URLWEBP = b'webp'             # <<<<<<<<<<<<<<
+ *     const char* PREURL = b'https://file.nmxc.ltd/'
+ *     const char* URLJPEG = b'jpeg'
  */
-  try {
-    __pyx_t_2 = std::string(((char const *)"webp"));
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 21, __pyx_L1_error)
-  }
-  __pyx_v_7modules_4rand_7randimg_URLWEBP = __pyx_t_2;
+  __pyx_v_7modules_4rand_7randimg_URLWEBP = ((char const *)"webp");
 
-  /* "modules/rand/randimg.pyx":22
+  /* "modules/rand/randimg.pyx":10
  * cdef:
- *     string URLWEBP = string(b'webp')
- *     string PREURL = string(b'https://file.nmxc.ltd/')             # <<<<<<<<<<<<<<
- *     string URLJPEG = string(b'jpeg')
- *     string SOURCE = string(b'.source.')
+ *     const char* URLWEBP = b'webp'
+ *     const char* PREURL = b'https://file.nmxc.ltd/'             # <<<<<<<<<<<<<<
+ *     const char* URLJPEG = b'jpeg'
+ *     const char* SOURCE = b'.source.'
  */
-  try {
-    __pyx_t_2 = std::string(((char const *)"https://file.nmxc.ltd/"));
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 22, __pyx_L1_error)
-  }
-  __pyx_v_7modules_4rand_7randimg_PREURL = __pyx_t_2;
+  __pyx_v_7modules_4rand_7randimg_PREURL = ((char const *)"https://file.nmxc.ltd/");
 
-  /* "modules/rand/randimg.pyx":23
- *     string URLWEBP = string(b'webp')
- *     string PREURL = string(b'https://file.nmxc.ltd/')
- *     string URLJPEG = string(b'jpeg')             # <<<<<<<<<<<<<<
- *     string SOURCE = string(b'.source.')
- *     string SLASH = string(b'/')
+  /* "modules/rand/randimg.pyx":11
+ *     const char* URLWEBP = b'webp'
+ *     const char* PREURL = b'https://file.nmxc.ltd/'
+ *     const char* URLJPEG = b'jpeg'             # <<<<<<<<<<<<<<
+ *     const char* SOURCE = b'.source.'
+ *     const char* SLASH = b'/'
  */
-  try {
-    __pyx_t_2 = std::string(((char const *)"jpeg"));
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 23, __pyx_L1_error)
-  }
-  __pyx_v_7modules_4rand_7randimg_URLJPEG = __pyx_t_2;
+  __pyx_v_7modules_4rand_7randimg_URLJPEG = ((char const *)"jpeg");
 
-  /* "modules/rand/randimg.pyx":24
- *     string PREURL = string(b'https://file.nmxc.ltd/')
- *     string URLJPEG = string(b'jpeg')
- *     string SOURCE = string(b'.source.')             # <<<<<<<<<<<<<<
- *     string SLASH = string(b'/')
+  /* "modules/rand/randimg.pyx":12
+ *     const char* PREURL = b'https://file.nmxc.ltd/'
+ *     const char* URLJPEG = b'jpeg'
+ *     const char* SOURCE = b'.source.'             # <<<<<<<<<<<<<<
+ *     const char* SLASH = b'/'
  * 
  */
-  try {
-    __pyx_t_2 = std::string(((char const *)".source."));
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 24, __pyx_L1_error)
-  }
-  __pyx_v_7modules_4rand_7randimg_SOURCE = __pyx_t_2;
+  __pyx_v_7modules_4rand_7randimg_SOURCE = ((char const *)".source.");
 
-  /* "modules/rand/randimg.pyx":25
- *     string URLJPEG = string(b'jpeg')
- *     string SOURCE = string(b'.source.')
- *     string SLASH = string(b'/')             # <<<<<<<<<<<<<<
+  /* "modules/rand/randimg.pyx":13
+ *     const char* URLJPEG = b'jpeg'
+ *     const char* SOURCE = b'.source.'
+ *     const char* SLASH = b'/'             # <<<<<<<<<<<<<<
  * 
  * cdef class Randimg:
  */
-  try {
-    __pyx_t_2 = std::string(((char const *)"/"));
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 25, __pyx_L1_error)
-  }
-  __pyx_v_7modules_4rand_7randimg_SLASH = __pyx_t_2;
+  __pyx_v_7modules_4rand_7randimg_SLASH = ((char const *)"/");
 
-  /* "modules/rand/randimg.pyx":85
- *         return [(PREURL + imgFormat + SLASH + self.imgmb[randbelow(self.imgmb_total)] + SOURCE + imgFormat).decode('UTF-8') for i in range(n)]
+  /* "modules/rand/randimg.pyx":33
+ *         return urls
  * 
- *     cpdef process(self,bytes ua,encode,int n,str method):             # <<<<<<<<<<<<<<
- *     #def process(self,ua:bytes,encode:str|bool,n:int,method:str) -> str|list:
- *         cdef string imgFormat
+ *     cpdef str process(self, bytes ua, int n, bytes method):             # <<<<<<<<<<<<<<
+ *         cdef const char* imgFormat
+ *         imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_1process, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg_process, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_1process, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg_process, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7modules_4rand_7randimg_Randimg->tp_dict, __pyx_n_s_process, __pyx_t_1) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7modules_4rand_7randimg_Randimg->tp_dict, __pyx_n_s_process, __pyx_t_1) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_7modules_4rand_7randimg_Randimg);
 
@@ -4751,7 +3891,7 @@ if (!__Pyx_RefNanny) {
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_5__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg___reduce_cython, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_5__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg___reduce_cython, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_reduce_cython, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4762,15 +3902,15 @@ if (!__Pyx_RefNanny) {
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_7__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg___setstate_cython, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_7modules_4rand_7randimg_7Randimg_7__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Randimg___setstate_cython, NULL, __pyx_n_s_modules_rand_randimg, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_setstate_cython, __pyx_t_1) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "modules/rand/randimg.pyx":1
- * # cython: language_level=3             # <<<<<<<<<<<<<<
- * # distutils: language = c++
- * from libc.string cimport strstr,strlen,memset
+ * import json             # <<<<<<<<<<<<<<
+ * from libcpp.vector cimport vector
+ * from libcpp.string cimport string
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4880,6 +4020,55 @@ static CYTHON_INLINE PyObject* __Pyx_decode_c_bytes(
     } else {
         return PyUnicode_Decode(cstring, length, encoding, errors);
     }
+}
+
+/* SetItemInt */
+static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v) {
+    int r;
+    if (!j) return -1;
+    r = PyObject_SetItem(o, j, v);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v, int is_list,
+                                               CYTHON_NCP_UNUSED int wraparound, CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = (!wraparound) ? i : ((likely(i >= 0)) ? i : i + PyList_GET_SIZE(o));
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o)))) {
+            PyObject* old = PyList_GET_ITEM(o, n);
+            Py_INCREF(v);
+            PyList_SET_ITEM(o, n, v);
+            Py_DECREF(old);
+            return 1;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_ass_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return -1;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_ass_item(o, i, v);
+        }
+    }
+#else
+#if CYTHON_COMPILING_IN_PYPY
+    if (is_list || (PySequence_Check(o) && !PyDict_Check(o)))
+#else
+    if (is_list || PySequence_Check(o))
+#endif
+    {
+        return PySequence_SetItem(o, i, v);
+    }
+#endif
+    return __Pyx_SetItemInt_Generic(o, PyInt_FromSsize_t(i), v);
 }
 
 /* PyDictVersioning */
@@ -5069,155 +4258,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
     return result;
 }
 #endif
-
-/* BytesEquals */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-    if (s1 == s2) {
-        return (equals == Py_EQ);
-    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
-        const char *ps1, *ps2;
-        Py_ssize_t length = PyBytes_GET_SIZE(s1);
-        if (length != PyBytes_GET_SIZE(s2))
-            return (equals == Py_NE);
-        ps1 = PyBytes_AS_STRING(s1);
-        ps2 = PyBytes_AS_STRING(s2);
-        if (ps1[0] != ps2[0]) {
-            return (equals == Py_NE);
-        } else if (length == 1) {
-            return (equals == Py_EQ);
-        } else {
-            int result;
-#if CYTHON_USE_UNICODE_INTERNALS && (PY_VERSION_HEX < 0x030B0000)
-            Py_hash_t hash1, hash2;
-            hash1 = ((PyBytesObject*)s1)->ob_shash;
-            hash2 = ((PyBytesObject*)s2)->ob_shash;
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                return (equals == Py_NE);
-            }
-#endif
-            result = memcmp(ps1, ps2, (size_t)length);
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
-        return (equals == Py_NE);
-    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
-        return (equals == Py_NE);
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-#endif
-}
-
-/* UnicodeEquals */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-#if PY_MAJOR_VERSION < 3
-    PyObject* owned_ref = NULL;
-#endif
-    int s1_is_unicode, s2_is_unicode;
-    if (s1 == s2) {
-        goto return_eq;
-    }
-    s1_is_unicode = PyUnicode_CheckExact(s1);
-    s2_is_unicode = PyUnicode_CheckExact(s2);
-#if PY_MAJOR_VERSION < 3
-    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
-        owned_ref = PyUnicode_FromObject(s2);
-        if (unlikely(!owned_ref))
-            return -1;
-        s2 = owned_ref;
-        s2_is_unicode = 1;
-    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
-        owned_ref = PyUnicode_FromObject(s1);
-        if (unlikely(!owned_ref))
-            return -1;
-        s1 = owned_ref;
-        s1_is_unicode = 1;
-    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
-        return __Pyx_PyBytes_Equals(s1, s2, equals);
-    }
-#endif
-    if (s1_is_unicode & s2_is_unicode) {
-        Py_ssize_t length;
-        int kind;
-        void *data1, *data2;
-        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
-            return -1;
-        length = __Pyx_PyUnicode_GET_LENGTH(s1);
-        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
-            goto return_ne;
-        }
-#if CYTHON_USE_UNICODE_INTERNALS
-        {
-            Py_hash_t hash1, hash2;
-        #if CYTHON_PEP393_ENABLED
-            hash1 = ((PyASCIIObject*)s1)->hash;
-            hash2 = ((PyASCIIObject*)s2)->hash;
-        #else
-            hash1 = ((PyUnicodeObject*)s1)->hash;
-            hash2 = ((PyUnicodeObject*)s2)->hash;
-        #endif
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                goto return_ne;
-            }
-        }
-#endif
-        kind = __Pyx_PyUnicode_KIND(s1);
-        if (kind != __Pyx_PyUnicode_KIND(s2)) {
-            goto return_ne;
-        }
-        data1 = __Pyx_PyUnicode_DATA(s1);
-        data2 = __Pyx_PyUnicode_DATA(s2);
-        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
-            goto return_ne;
-        } else if (length == 1) {
-            goto return_eq;
-        } else {
-            int result = memcmp(data1, data2, (size_t)(length * kind));
-            #if PY_MAJOR_VERSION < 3
-            Py_XDECREF(owned_ref);
-            #endif
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & s2_is_unicode) {
-        goto return_ne;
-    } else if ((s2 == Py_None) & s1_is_unicode) {
-        goto return_ne;
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        #if PY_MAJOR_VERSION < 3
-        Py_XDECREF(owned_ref);
-        #endif
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-return_eq:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_EQ);
-return_ne:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_NE);
-#endif
-}
 
 /* RaiseArgTupleInvalid */
 static void __Pyx_RaiseArgtupleInvalid(

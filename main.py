@@ -18,6 +18,8 @@ app.use_cors(
     allow_headers="*",
     max_age=2592000,
 )
+
+
 # 使用orjson
 def serialize(value) -> str:
     return orjson.dumps(value).decode("utf8")
@@ -30,6 +32,8 @@ def pretty_json_dumps(obj):
 
 # 使Blacksheep绑定
 json.use(loads=orjson.loads, dumps=serialize, pretty_dumps=pretty_json_dumps)
+
+
 # 发生错误时返回
 def handler_error(request: Request, exc: Exception) -> Response:
     return Response(
@@ -41,6 +45,8 @@ def handler_error(request: Request, exc: Exception) -> Response:
 
 
 app.handle_internal_server_error = handler_error
+
+
 # 生命周期：启动前
 @app.on_start
 async def before_start(app: Application) -> None:
@@ -65,7 +71,7 @@ async def after_start(app: Application) -> None:
 # 生命周期：停止时
 @app.on_stop
 async def on_stop(app: Application) -> None:
-    await app.service_provider[sql].close()
+    await app.service_provider[SelfSqlite].close()
 
 
 if __name__ == "__main__":

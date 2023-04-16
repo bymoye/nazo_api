@@ -22,6 +22,7 @@ from app.jsonres import json, pretty_json
 router = Router()
 get = router.get
 
+
 # 未定义路由
 def fallback() -> Response:
     return json(status=404, data={"msg": "这里不是你该来的地方"})
@@ -100,8 +101,8 @@ async def rand_img(
         return json(
             {
                 "code": 200,
-                "url": rdimg.value.process(
-                    ua.value, encode.value, number.value, method.value
+                "url": rdimg.value.process(ua.value, number.value, method.value).split(
+                    " "
                 ),
             }
         )
@@ -110,7 +111,7 @@ async def rand_img(
         [
             (
                 b"Location",
-                rdimg.value.process(ua.value, encode.value, number.value, method.value),
+                rdimg.value.process(ua.value, number.value, method.value).encode(),
             )
         ],
     )
@@ -119,7 +120,7 @@ async def rand_img(
 @docs(yiyan_API_docs)
 @get("/yiyan")
 async def yiyan(
-    hitokoto: FromServices[Hitokoto], c: FromQuery[set] = FromQuery({})
+    hitokoto: FromServices[Hitokoto], c: FromQuery[set] = FromQuery(set())
 ) -> Response:
     t = list(hitokoto.value.type_set & c.value)
     result = hitokoto.value.get_hitokoto(t)
