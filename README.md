@@ -78,6 +78,11 @@ make && make install
 
 # 更新日志
 
+- 2023-04-24 重构大量代码
+  1. 使用 ua 检查是否支持 webp 拆分为一个单独的模块: [webp_support](https://github.com/bymoye/webp_support)
+  2. 使随机数拆分为一个单独的模块: [nazo_rand](https://github.com/bymoye/nazo_rand)
+  3. 使随机图在使用 c 特性实现.
+  4. 使 ip2asn 使用 c++17 特性.
 - 2022-12-18 废案: C++实现 yiyan 随机 (提升不大)
 - 2022-03-22 重写随机图模块
 - 2021-10-28 完善 Config
