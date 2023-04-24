@@ -12,3 +12,5 @@ build_cython
 *.o
 .vscode
 randimg.cpp
+randimg.c
+randimg.cpp

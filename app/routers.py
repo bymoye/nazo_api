@@ -39,7 +39,7 @@ async def index():
 
 @docs(ip_API_docs)
 @get("/ip/{ip}")
-async def get_ip(ipinfo: FromServices[IpUtils], ip: FromQuery[bytes]) -> Response:
+async def get_ip(ipinfo: FromServices[IpUtils], ip: FromRoute[bytes]) -> Response:
     try:
         return json(await ipinfo.value.get_ip(ip.value))
     except Exception as e:

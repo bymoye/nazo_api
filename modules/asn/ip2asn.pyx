@@ -2,20 +2,23 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
 from libcpp.string cimport string
-
-cdef extern from "ipasn.hpp":
-    void _init "Address::init"(string ipv4file,string ipv6file)
-    vector[string] _lookup "Address::lookup"(string ip) except +
-
+from libcpp.pair cimport pair
+cdef extern from "ipasn.hpp" namespace "Address":
+    ctypedef pair[string, string] DataPair
+    void init(const string &ipv4file, const string &ipv6file)
+    DataPair lookup(const string &ip)
 
 cdef class IpToAsn:
     def __cinit__(self,str ipv4file,str ipv6file):
-        _init(ipv4file.encode('UTF-8'),ipv6file.encode('UTF-8'))
+        init(ipv4file.encode('UTF-8'),ipv6file.encode('UTF-8'))
     
-    def lookup(self,string ip):
+    cpdef tuple lookup(self,string ip):
+        cdef DataPair result
         try:
-            return _lookup(ip)
+            result = lookup(ip)
         except IndexError:
-            return "保留地址"
+            return (None,"保留地址")
         except RuntimeError as e:
-            return f"错误: {e}" 
+            return (None,f"错误: {e}" )
+        
+        return (result.first, result.second)
