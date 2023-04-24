@@ -25,9 +25,9 @@ dnf install libmaxminddb-devel
 
 请自行到 [iptoasn](https://iptoasn.com/) 下载 `ip2asn-v4.tsv`和`ip2asn-v6.tsv` 并放到 `src` 目录中
 
-随机图库放在 `./src/img_url_mb.txt` 和 `./src/img_url_pc.txt` 中 可以自行修改其中的链接
+~~随机图库放在 `./src/img_url_mb.txt` 和 `./src/img_url_pc.txt` 中 可以自行修改其中的链接~~
 
-这里我是用的是[fghrsh](https://img.fghrsh.net) 大佬的图床 所以有处理规则
+图片请使用 [image_process](https://github.com/bymoye/Image_process) 生成
 
 可以自行修改 `./app/routers.py` 中的 `async def Randimg`
 
