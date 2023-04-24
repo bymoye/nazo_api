@@ -1,17 +1,14 @@
 # cython: language_level=3
 # distutils: language = c++
-cimport cython
 import json
 from libcpp.vector cimport vector
 from webp_support.webp_support cimport webp_supported
 from nazo_rand.nazo_rand cimport cy_random_below
 from libc.string cimport strcmp
-from cpython cimport array
-from cpython cimport string
-import array as py_array
+from libc.string cimport strcpy
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport snprintf
-from libc.string cimport strcpy
+from cpython.bytes cimport PyBytes_FromString
 
 cdef:
     const char* URLWEBP = b'webp'
@@ -54,20 +51,40 @@ cdef class Randimg:
 
         return urls
 
-    cpdef list process(self, bytes ua, int n, bytes method):
-        cdef const char* imgFormat
+    cdef void _free_urls(self,char **urls, int n) nogil:
         cdef int i
-        imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
-
-        n = min(max(n, 1), 10)
-        cdef char** urls = self.generate_img_urls(n, imgFormat, method)
-        py_urls = [urls[i].decode('utf-8') for i in range(n)]
-
-        # 释放内存
         for i in range(n):
             if urls[i] != NULL:
                 free(urls[i])
         free(urls)
+
+    cpdef process(self, bytes ua, int n, bytes method,bytes encode=b""):
+        """
+        根据给定的参数生成图像URL。
+
+        参数:
+        ua: bytes - 用户代理, 用于检查WebP支持。
+        n: int - 请求的图像URL数量, 范围为1-10。
+        method: bytes - 生成图像URL的方法。
+        """
+        cdef const char* imgFormat
+        imgFormat = URLWEBP if webp_supported(ua) else URLJPEG
+        cdef int i
+        if encode == b"json":
+            n = min(max(n, 1), 10)
+        else:
+            n = 1
+        cdef char** urls = self.generate_img_urls(n, imgFormat, method)
+        # 判断urls的长度是否为1
+        if encode != b"json":
+            py_url = PyBytes_FromString(urls[0])
+            self._free_urls(urls, n)
+            return py_url
+
+        py_urls = [urls[i].decode('utf-8') for i in range(n)]
+
+        # 释放内存
+        self._free_urls(urls, n)
 
         return py_urls
 

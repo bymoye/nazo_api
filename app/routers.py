@@ -90,19 +90,19 @@ async def rand_img(
     # request: Request,
     ua: FromUserAgent,
     rdimg: FromServices[rdimg],
-    method: FromQuery[str] = FromQuery("pc"),
-    encode: FromQuery[str] = FromQuery(None),
+    method: FromQuery[bytes] = FromQuery(b"pc"),
+    encode: FromQuery[bytes] = FromQuery(b"redirect"),
     number: FromQuery[int] = FromQuery(1),
 ) -> Response:
     # ua = request.get_single_header(b"user-agent")
-    if encode.value not in ["json", None]:
-        encode.value = None
-    if encode.value:
+    if encode.value not in {b"json", b"redirect"}:
+        return bad_request("encode参数错误")
+    if encode.value == b"json":
         return json(
             {
                 "code": 200,
-                "url": rdimg.value.process(ua.value, number.value, method.value).split(
-                    " "
+                "url": rdimg.value.process(
+                    ua.value, number.value, method.value, encode.value
                 ),
             }
         )
@@ -111,7 +111,7 @@ async def rand_img(
         [
             (
                 b"Location",
-                rdimg.value.process(ua.value, number.value, method.value).encode(),
+                rdimg.value.process(ua.value, number.value, method.value, encode.value),
             )
         ],
     )
