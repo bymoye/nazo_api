@@ -1,38 +1,39 @@
 from dataclasses import dataclass
 from abc import ABC
+from typing import Optional, Union
 
 
 @dataclass
 class IPDataClass:
-    country: str
-    region: str
-    city: str
-    AS: int
-    isp: str
+    country: Optional[str]
+    region: Optional[str]
+    city: Optional[str]
+    AS: Optional[str]
+    isp: Optional[str]
 
 
 @dataclass
 class QQDataClass:
-    qqnumber: int
-    qqname: str
-    qqavatar: str
+    qq_number: str
+    qq_name: str
+    qq_avatar: str
 
 
 @dataclass
 class IpResult:
-    ip: str = None
-    data: IPDataClass = None
-    code: int = None
+    ip: Optional[str] = None
+    data: Optional[IPDataClass] = None
+    code: Optional[int] = None
 
 
 @dataclass
 class UADataClass:
     ip: str
     header: dict
-    ipinfo: IPDataClass
+    ipinfo: Optional[IPDataClass]
 
 
 @dataclass
 class RandImgDataClass:
     code: int
-    url: str
+    url: list

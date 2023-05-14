@@ -1,10 +1,9 @@
+import os
 from geoip2.database import Reader
-from geoip2.errors import AddressNotFoundError
 from maxminddb import MODE_MMAP_EXT
 from dataclass import IpResult, IPDataClass
-from modules.asn.ip2asn import IpToAsn
+from nazo_ip2asn import Ip2Asn
 from ipaddress import ip_address
-import os
 
 
 class IpUtils:
@@ -19,29 +18,32 @@ class IpUtils:
         self.reader_city = Reader(
             "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
         )
-        self.reader_asn = IpToAsn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
+        self.reader_asn = Ip2Asn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
 
-    async def get_ip(self, ip: bytes) -> IpResult:
+    def get_ip(self, ip: bytes) -> IpResult:
         try:
             _ip = ip_address(ip.decode("utf8"))
-            city = self.reader_city.city(_ip)
         except ValueError:
             raise ValueError("IP地址不合法")
-        except AddressNotFoundError:
-            if _ip.is_private:
-                raise ValueError("IP地址为私有地址")
-            if _ip.is_multicast:
-                raise ValueError("IP地址为组播地址")
-            if _ip.is_unspecified:
-                raise ValueError("IP地址为未指定地址")
+        if _ip.is_private:
+            raise ValueError("IP地址为私有地址")
+        if _ip.is_multicast:
+            raise ValueError("IP地址为组播地址")
+        if _ip.is_unspecified:
+            raise ValueError("IP地址为未指定地址")
+        city = self.reader_city.city(_ip)
 
-        asn = self.reader_asn.lookup(ip)
-        asn_type = type(asn)
+        _as, isp = self.reader_asn.lookup(ip)
+        if isinstance(_as, bytes):
+            _as = _as.decode()
+        if isinstance(isp, bytes):
+            isp = isp.decode()
+
         ipinfo = IPDataClass(
             country=city.country.name,
             region=city.subdivisions.most_specific.name,
             city=city.city.name,
-            AS=asn if asn_type is str else asn[0].decode(),
-            isp=asn if asn_type is str else asn[-1].decode(),
+            AS=_as,
+            isp=isp,
         )
         return IpResult(str(_ip), ipinfo, 0)

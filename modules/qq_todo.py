@@ -1,6 +1,7 @@
+import orjson, httpx
 from modules.sql_todo import SelfSqlite
 from dataclass import QQDataClass
-import orjson, httpx
+from typing import Tuple, Union
 
 
 class QQUtils:
@@ -8,7 +9,7 @@ class QQUtils:
         self.sql = sql
         self.flag = []
 
-    async def get_qqinfo(self, qqnum: str) -> QQDataClass:
+    async def get_qqinfo(self, qqnum: str) -> Tuple[bool, Union[str, QQDataClass]]:
         if qq_info := self.sql.query_qq_table(qqnum):
             return True, qq_info
         if qqnum in self.flag:
@@ -38,7 +39,7 @@ class QQUtils:
             if qqnum not in nickname:
                 return False, "返回的结果中号码不匹配,可能号码不存在"
             result = QQDataClass(qqnum, nickname[qqnum][6], qqavatar_api)
-            self.sql.write_qq_table(qqnum, result)
+            self.sql.write_qq_table(result.qq_number, result)
             return True, result
         except Exception as e:
             return False, f"未知错误: {e}"

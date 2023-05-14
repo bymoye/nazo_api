@@ -1,7 +1,9 @@
 import os
 import orjson
 from blacksheep import Content, Request, Response, Application
-from modules.rand import randimg
+
+# from modules.rand import randimg
+from nazo_image_utils import RandImage
 from modules import ip_todo, SelfSqlite, qq_todo, yiyan_todo
 from app import docs, router
 from blacksheep.plugins import json
@@ -31,11 +33,11 @@ def pretty_json_dumps(obj):
 
 
 # 使Blacksheep绑定
-json.use(loads=orjson.loads, dumps=serialize, pretty_dumps=pretty_json_dumps)
+json.use(loads=orjson.loads, dumps=serialize, pretty_dumps=pretty_json_dumps)  # type: ignore
 
 
 # 发生错误时返回
-def handler_error(request: Request, exc: Exception) -> Response:
+async def handler_error(request: Request, exc: Exception) -> Response:
     return Response(
         status=500,
         content=Content(
@@ -57,7 +59,13 @@ async def before_start(app: Application) -> None:
     )
     app.services.add_instance(ip_todo.IpUtils())
     app.services.add_instance(yiyan_todo.Hitokoto())
-    app.services.add_instance(randimg.Randimg())
+    app.services.add_instance(
+        RandImage(
+            "./src/manifest.json",
+            "./src/manifest_mobile.json",
+            b"https://file.nmxc.ltd",
+        )
+    )
 
 
 # 生命周期：启动后
@@ -77,4 +85,4 @@ async def on_stop(app: Application) -> None:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app=app, port=os.environ.get("port", 5000), limit_concurrency=500)
+    uvicorn.run(app=app, port=os.environ.get("port", 5000), limit_concurrency=500)  # type: ignore

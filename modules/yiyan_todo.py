@@ -1,4 +1,5 @@
 import os, orjson, httpx
+from typing import Optional
 from nazo_rand import randbelow
 
 
@@ -48,6 +49,6 @@ class Hitokoto:
                 self.type_cont_len[i] = len(self.type_cont[i])
         print("加载完毕")
 
-    def get_hitokoto(self, l: list = None) -> dict:
+    def get_hitokoto(self, l: Optional[list] = None) -> dict:
         n = l[randbelow(len(l))] if l else self.type_list[randbelow(self.type_list_len)]
         return self.type_cont[n][randbelow(self.type_cont_len[n])]

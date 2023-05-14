@@ -1,7 +1,8 @@
-import sqlite3
 import os
-from dataclass import IPDataClass, QQDataClass
+import sqlite3
 import orjson
+from dataclass import IPDataClass, QQDataClass
+from typing import Optional, Union
 
 
 class SelfSqlite:
@@ -22,12 +23,12 @@ class SelfSqlite:
     def create_ip_table(self) -> None:
         try:
             create_table = """
-            CREATE TABLE IF NOT EXISTS ipcache(
-            IP            TEXT,
-            Result        TEXT,
-            CreateTime    TIMESTAMP,
-            PRIMARY KEY (IP),
-            UNIQUE (IP)
+            CREATE TABLE IF NOT EXISTS ip_cache(
+            ip            TEXT,
+            result        TEXT,
+            create_time    TIMESTAMP,
+            PRIMARY KEY (ip),
+            UNIQUE (ip)
             );
             """
             with self.con as con:
@@ -38,12 +39,12 @@ class SelfSqlite:
     def create_qq_table(self) -> None:
         try:
             create_table = """
-            CREATE TABLE IF NOT EXISTS qqcache(
-            qqnum       CHAR(15),
-            Result      TEXT,
-            CreateTime  TIMESTAMP,
-            PRIMARY KEY (qqnum),
-            UNIQUE      (qqnum)
+            CREATE TABLE IF NOT EXISTS qq_cache(
+            qq_number       CHAR(15),
+            result      TEXT,
+            create_time  TIMESTAMP,
+            PRIMARY KEY (qq_number),
+            UNIQUE      (qq_number)
             );
             """
             with self.con as con:
@@ -51,32 +52,32 @@ class SelfSqlite:
         except:
             raise Exception("创建QQ缓存表发生错误")
 
-    def query_qq_table(self, qqnum: str) -> QQDataClass | bool:
-        sql = "select * FROM qqcache WHERE qqnum=:qqnum AND CreateTime > strftime('%s','now') - 43200"
+    def query_qq_table(self, qqnum: str) -> Optional[QQDataClass]:
+        sql = "select * FROM qq_cache WHERE qq_number=:qqnum AND create_time > strftime('%s','now') - 43200"
         with self.con as con:
             result = con.execute(sql, {"qqnum": qqnum}).fetchone()
             return (
-                False
+                None
                 if result is None
-                else QQDataClass(**orjson.loads(result["Result"]))
+                else QQDataClass(**orjson.loads(result["result"]))
             )
 
-    def query_ip_table(self, IP: str) -> IPDataClass | bool:
-        sql = "select * FROM ipcache WHERE IP=:IP AND CreateTime > strftime('%s','now') - 2592000"
+    def query_ip_table(self, ip: str) -> Union[IPDataClass, bool]:
+        sql = "select * FROM ip_cache WHERE ip=:ip AND create_time > strftime('%s','now') - 2592000"
         with self.con as con:
-            result = con.execute(sql, {"IP": IP}).fetchone()
+            result = con.execute(sql, {"ip": ip}).fetchone()
             return (
                 False
                 if result is None
-                else IPDataClass(**orjson.loads(result["Result"]))
+                else IPDataClass(**orjson.loads(result["result"]))
             )
 
-    def write_qq_table(self, qqnum: int, Result: QQDataClass) -> None:
-        sql = "INSERT OR REPLACE INTO qqcache VALUES (:qqnum , :Result , strftime('%s','now'))"
+    def write_qq_table(self, qqnum: str, result: QQDataClass) -> None:
+        sql = "INSERT OR REPLACE INTO qq_cache VALUES (:qqnum , :result , strftime('%s','now'))"
         with self.con as con:
-            con.execute(sql, {"qqnum": qqnum, "Result": orjson.dumps(Result)})
+            con.execute(sql, {"qqnum": qqnum, "result": orjson.dumps(result)})
 
-    def write_ip_table(self, IP: str, Result: IPDataClass) -> None:
-        sql = "INSERT OR REPLACE INTO ipcache VALUES (:IP , :Result , strftime('%s','now'))"
+    def write_ip_table(self, ip: str, result: IPDataClass) -> None:
+        sql = "INSERT OR REPLACE INTO ip_cache VALUES (:ip , :result , strftime('%s','now'))"
         with self.con as con:
-            con.execute(sql, {"IP": IP, "Result": orjson.dumps(Result)})
+            con.execute(sql, {"ip": ip, "result": orjson.dumps(result)})

@@ -7,7 +7,7 @@ from blacksheep.server.responses import redirect, bad_request
 from modules.ip_todo import IpUtils
 from modules.qq_todo import QQUtils
 from modules.yiyan_todo import Hitokoto
-from modules.rand.randimg import Randimg as rdimg
+from nazo_image_utils import RandImage
 from dataclass import UADataClass, IpResult
 from app.docs import (
     UA_API_docs,
@@ -41,7 +41,7 @@ async def index():
 @get("/ip/{ip}")
 async def get_ip(ipinfo: FromServices[IpUtils], ip: FromRoute[bytes]) -> Response:
     try:
-        return json(await ipinfo.value.get_ip(ip.value))
+        return json(ipinfo.value.get_ip(ip.value))
     except Exception as e:
         return Response(
             status=500,
@@ -59,12 +59,13 @@ async def get_ua(
     ipinfo: FromServices[IpUtils],
 ) -> Response:
     header = {i.decode(): j.decode() for i, j in request.headers}
-    ip = header.get("x-real-ip", ip.value[0])
+    request.get_first_header(b"x-real-ip")
+    _ip = header.get("x-real-ip", ip.value[0])
     try:
-        _ipinfo = await ipinfo.value.get_ip(ip.encode())
+        _ipinfo = ipinfo.value.get_ip(_ip.encode())
     except ValueError:
         _ipinfo = IpResult()
-    return json(UADataClass(ip, header, _ipinfo.data))
+    return json(UADataClass(_ip, header, _ipinfo.data))
 
 
 @docs(QQ_API_docs)
@@ -89,7 +90,7 @@ class FromUserAgent(FromHeader[bytes]):
 async def rand_img(
     # request: Request,
     ua: FromUserAgent,
-    rdimg: FromServices[rdimg],
+    rdimg: FromServices[RandImage],
     method: FromQuery[bytes] = FromQuery(b"pc"),
     encode: FromQuery[bytes] = FromQuery(b"redirect"),
     number: FromQuery[int] = FromQuery(1),
@@ -97,13 +98,13 @@ async def rand_img(
     # ua = request.get_single_header(b"user-agent")
     if encode.value not in {b"json", b"redirect"}:
         return bad_request("encode参数错误")
-    if encode.value == b"json":
+
+    urls = rdimg.value.process(ua.value, number.value, method.value, encode.value)
+    if isinstance(urls, list):
         return json(
             {
                 "code": 200,
-                "url": rdimg.value.process(
-                    ua.value, number.value, method.value, encode.value
-                ),
+                "url": urls,
             }
         )
     return Response(
@@ -111,7 +112,7 @@ async def rand_img(
         [
             (
                 b"Location",
-                rdimg.value.process(ua.value, number.value, method.value, encode.value),
+                urls,
             )
         ],
     )

@@ -44,7 +44,7 @@ ip_API_docs = EndpointDocs(
                                     country="美国",
                                     region="null",
                                     city="null",
-                                    AS=15169,
+                                    AS="15169",
                                     isp="GOOGLE - Google LLC",
                                 ),
                                 code=0,
@@ -94,7 +94,7 @@ UA_API_docs = EndpointDocs(
                                     country="美国",
                                     region="null",
                                     city="null",
-                                    AS=15169,
+                                    AS="15169",
                                     isp="GOOGLE - Google LLC",
                                 ),
                             )
@@ -212,8 +212,8 @@ QQ_API_docs = EndpointDocs(
                     examples=[
                         ResponseExample(
                             QQDataClass(
-                                12345,
-                                12345,
+                                "12345",
+                                "12345",
                                 "http://thirdqq.qlogo.cn/g?b=sdk&k=ffxWIb7R5Rzpia88aM9SNXg&s=640&t=1555323417",
                             )
                         )
