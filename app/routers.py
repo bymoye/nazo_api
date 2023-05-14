@@ -98,7 +98,6 @@ async def rand_img(
     # ua = request.get_single_header(b"user-agent")
     if encode.value not in {b"json", b"redirect"}:
         return bad_request("encode参数错误")
-
     urls = rdimg.value.process(ua.value, number.value, method.value, encode.value)
     if isinstance(urls, list):
         return json(

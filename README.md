@@ -6,13 +6,11 @@
 
 开发环境为 `Python 3.11`
 
-因为用到 `orjson` 所以需要安装 `rust` 以完成 `orjson` 的安装
-
-(环境方面不再描述 环境问题按照提示处理)
+请先将目录下的 `.env.example` 重命名为 `.env` 并修改其中的配置
 
 本程序需要 GeoIP 库(本库不提供下载)
 
-请自行到 [Maxmind](https://www.maxmind.com/en/accounts/216453/geoip/downloads) 下载 `GeoLite2-City.mmdb` 并放到 `src` 目录中
+请自行到 [Maxmind](https://www.maxmind.com/en/accounts/) 下载 `GeoLite2-City.mmdb` 并放到 `src` 目录中
 
 需要安装 `libmaxminddb`
 
@@ -25,15 +23,9 @@ dnf install libmaxminddb-devel
 
 请自行到 [iptoasn](https://iptoasn.com/) 下载 `ip2asn-v4.tsv`和`ip2asn-v6.tsv` 并放到 `src` 目录中
 
-~~随机图库放在 `./src/img_url_mb.txt` 和 `./src/img_url_pc.txt` 中 可以自行修改其中的链接~~
-
-图片请使用 [image_process](https://github.com/bymoye/Image_process) 生成
-
-可以自行修改 `./app/routers.py` 中的 `async def Randimg`
+图片请使用 [nazo_image_utils](https://github.com/bymoye/nazo_image_utils) 生成
 
 一言库使用 [sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle)
-
-需要安装 `boost` 库
 
 # 建议
 
@@ -74,9 +66,14 @@ make && make install
 * bilibili_API
 * 重写 ip2asn
 
-- [x] yaml 替代 parse_it
-
 # 更新日志
+
+- 2023-05-14 迁移 model 中的大量代码到单独的模块
+
+  1. [nazo_image_utils](https://github.com/bymoye/nazo_image_utils) 主图片处理 / 随机图 url 生成
+  2. [nazo_rand](https://github.com/bymoye/nazo_rand) 随机数生成
+  3. [nazo_ip2asn](https://github.com/bymoye/nazo_ip2asn) ip2asn 的文件处理/查找实现
+  4. [webp_support](https://github.com/bymoye/webp_support) webp 支持检查
 
 - 2023-04-24 重构大量代码
   1. 使用 ua 检查是否支持 webp 拆分为一个单独的模块: [webp_support](https://github.com/bymoye/webp_support)

@@ -1,24 +1,39 @@
-import os
 from geoip2.database import Reader
 from maxminddb import MODE_MMAP_EXT
 from dataclass import IpResult, IPDataClass
 from nazo_ip2asn import Ip2Asn
+from pathlib import Path
 from ipaddress import ip_address
+from typing import Optional, Union
 
 
 class IpUtils:
-    def __init__(self) -> None:
-        if not os.path.exists("./src/GeoLite2-City.mmdb"):
+    def __init__(
+        self,
+        geolite2_city_path: Union[str, Path],
+        ip2asn_v4_path: Union[str, Path],
+        ip2asn_v6_path: Union[str, Path],
+    ) -> None:
+        if isinstance(geolite2_city_path, str):
+            geolite2_city_path = Path(geolite2_city_path)
+        if isinstance(ip2asn_v4_path, str):
+            ip2asn_v4_path = Path(ip2asn_v4_path)
+        if isinstance(ip2asn_v6_path, str):
+            ip2asn_v6_path = Path(ip2asn_v6_path)
+        # if not os.path.exists("./src/GeoLite2-City.mmdb"):
+        if not geolite2_city_path.exists():
             raise FileNotFoundError("GeoLite2-City.mmdb文件不存在")
-        if not os.path.exists("./src/ip2asn-v4.tsv"):
+        # if not os.path.exists("./src/ip2asn-v4.tsv"):
+        if not ip2asn_v4_path.exists():
             raise FileNotFoundError("ip2asn-v4.tsv文件不存在")
-        if not os.path.exists("./src/ip2asn-v6.tsv"):
+        # if not os.path.exists("./src/ip2asn-v6.tsv"):
+        if not ip2asn_v6_path.exists():
             raise FileNotFoundError("ip2asn-v6.tsv文件不存在")
 
         self.reader_city = Reader(
-            "./src/GeoLite2-City.mmdb", locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
+            geolite2_city_path, locales=["zh-CN", "en"], mode=MODE_MMAP_EXT
         )
-        self.reader_asn = Ip2Asn("./src/ip2asn-v4.tsv", "./src/ip2asn-v6.tsv")
+        self.reader_asn = Ip2Asn(str(ip2asn_v4_path), str(ip2asn_v6_path))
 
     def get_ip(self, ip: bytes) -> IpResult:
         try:

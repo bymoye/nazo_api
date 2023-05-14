@@ -1,14 +1,15 @@
 import os
+from dotenv import load_dotenv
 import orjson
 from blacksheep import Content, Request, Response, Application
 
 # from modules.rand import randimg
 from nazo_image_utils import RandImage
-from modules import ip_todo, SelfSqlite, qq_todo, yiyan_todo
+from modules import IpUtils, SelfSqlite, QQUtils, Hitokoto
 from app import docs, router
 from blacksheep.plugins import json
 
-# Config: _ApiConfig = service.build_provider().get(config).config
+load_dotenv()
 # 初始化
 app = Application(router=router)
 # redoc文档
@@ -53,17 +54,20 @@ app.handle_internal_server_error = handler_error
 @app.on_start
 async def before_start(app: Application) -> None:
     app.services.add_instance(SelfSqlite())
-    # provider = app.services.build_provider()
+    app.services.add_instance(QQUtils(app.services.build_provider().get(SelfSqlite)))
     app.services.add_instance(
-        qq_todo.QQUtils(app.services.build_provider().get(SelfSqlite))
+        IpUtils(
+            os.getenv("GEOLITE2_CITY_PATH", "./src/GeoLite2-City.mmdb"),
+            os.getenv("IP2ASN_V4_PATH", "./src/ip2asn-v4.tsv"),
+            os.getenv("IP2ASN_V6_PATH", "./src/ip2asn-v6.tsv"),
+        )
     )
-    app.services.add_instance(ip_todo.IpUtils())
-    app.services.add_instance(yiyan_todo.Hitokoto())
+    app.services.add_instance(Hitokoto())
     app.services.add_instance(
         RandImage(
-            "./src/manifest.json",
-            "./src/manifest_mobile.json",
-            b"https://file.nmxc.ltd",
+            os.getenv("MANIFEST_PATH", "./src/manifest.json"),
+            os.getenv("MANIFEST_MOBILE_PATH", "./src/manifest_mobile.json"),
+            os.getenv("IMAGE_DOMAIN", "https://example.com"),
         )
     )
 
@@ -72,7 +76,7 @@ async def before_start(app: Application) -> None:
 @app.after_start
 async def after_start(app: Application) -> None:
     provider = app.services.build_provider()
-    yiyan: yiyan_todo.Hitokoto = provider.get("Hitokoto")
+    yiyan: Hitokoto = provider.get("Hitokoto")
     await yiyan.init()
 
 
