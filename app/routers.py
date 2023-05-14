@@ -10,12 +10,12 @@ from modules.yiyan_todo import Hitokoto
 from nazo_image_utils import RandImage
 from dataclass import UADataClass, IpResult
 from app.docs import (
-    UA_API_docs,
-    ip_API_docs,
+    ua_docs,
+    ip_docs,
     docs,
-    randimg_API_docs,
-    yiyan_API_docs,
-    QQ_API_docs,
+    randimg_docs,
+    yiyan_docs,
+    qq_docs,
 )
 from app.jsonres import json, pretty_json
 
@@ -37,7 +37,7 @@ async def index():
     return redirect("/docs")
 
 
-@docs(ip_API_docs)
+@docs(ip_docs)
 @get("/ip/{ip}")
 async def get_ip(ipinfo: FromServices[IpUtils], ip: FromRoute[bytes]) -> Response:
     try:
@@ -51,7 +51,7 @@ async def get_ip(ipinfo: FromServices[IpUtils], ip: FromRoute[bytes]) -> Respons
         )
 
 
-@docs(UA_API_docs)
+@docs(ua_docs)
 @get("/ua")
 async def get_ua(
     request: Request,
@@ -68,7 +68,7 @@ async def get_ua(
     return json(UADataClass(_ip, header, _ipinfo.data))
 
 
-@docs(QQ_API_docs)
+@docs(qq_docs)
 @get("/qq/{str:qqnum}")
 async def get_qq(qqnum: FromRoute[str], qq_utils: FromServices[QQUtils]) -> Response:
     if (
@@ -85,20 +85,20 @@ class FromUserAgent(FromHeader[bytes]):
     name = "user-agent"
 
 
-@docs(randimg_API_docs)
+@docs(randimg_docs)
 @get("/randimg")
 async def rand_img(
     # request: Request,
     ua: FromUserAgent,
     rdimg: FromServices[RandImage],
-    method: FromQuery[bytes] = FromQuery(b"pc"),
+    platform: FromQuery[bytes] = FromQuery(b"pc"),
     encode: FromQuery[bytes] = FromQuery(b"redirect"),
     number: FromQuery[int] = FromQuery(1),
 ) -> Response:
     # ua = request.get_single_header(b"user-agent")
     if encode.value not in {b"json", b"redirect"}:
         return bad_request("encode参数错误")
-    urls = rdimg.value.process(ua.value, number.value, method.value, encode.value)
+    urls = rdimg.value.process(ua.value, number.value, platform.value, encode.value)
     if isinstance(urls, list):
         return json(
             {
@@ -117,7 +117,7 @@ async def rand_img(
     )
 
 
-@docs(yiyan_API_docs)
+@docs(yiyan_docs)
 @get("/yiyan")
 async def yiyan(
     hitokoto: FromServices[Hitokoto], c: FromQuery[set] = FromQuery(set())

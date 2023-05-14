@@ -23,10 +23,10 @@ docs = OpenAPIHandler(
     ),
 )
 docs.ui_providers.append(ReDocUIProvider("/docs"))
-ip_API_docs = EndpointDocs(
+ip_docs = EndpointDocs(
     tags=["ip&ua"],
     summary="获取IP信息(定位)",
-    description="""### 一个获取IP信息的API,支持IP4和IP6,主要为GEOIP,备用为高德API请求方式 """,
+    description="""### 一个获取IP信息的API,支持IP4和IP6,主要为GEOIP""",
     parameters={
         "ip": ParameterInfo(example="8.8.8.8", description="此处输入ip地址(ipv4 | ipv6)")
     },
@@ -57,7 +57,7 @@ ip_API_docs = EndpointDocs(
     },
 )
 
-UA_API_docs = EndpointDocs(
+ua_docs = EndpointDocs(
     tags=["ip&ua"],
     summary="获取浏览器UA信息及当前IP信息",
     description="""一个获取UA信息及当前IP信息的API""",
@@ -107,14 +107,14 @@ UA_API_docs = EndpointDocs(
 )
 
 
-randimg_API_docs = EndpointDocs(
+randimg_docs = EndpointDocs(
     tags=["随机图"],
     summary="获取随机图",
     description="一个获取随机图的API",
     parameters={
         "encode": ParameterInfo(description="`json`或`留空`"),
-        "n": ParameterInfo(description="需要获取的数量,仅在`encode`为`json`时有效,该值不得大于10"),
-        "type": ParameterInfo("`pc`或`mobile`"),
+        "number": ParameterInfo(description="需要获取的数量,仅在`encode`为`json`时有效,该值不得大于10"),
+        "platform": ParameterInfo("`pc`或`mobile`"),
     },
     responses={
         200: ResponseInfo(
@@ -140,7 +140,7 @@ randimg_API_docs = EndpointDocs(
     },
 )
 
-yiyan_API_docs = EndpointDocs(
+yiyan_docs = EndpointDocs(
     tags=["一言"],
     summary="获取一言",
     description="一个获取一言的API",
@@ -198,7 +198,7 @@ yiyan_API_docs = EndpointDocs(
     },
 )
 
-QQ_API_docs = EndpointDocs(
+qq_docs = EndpointDocs(
     tags=["企鹅"],
     summary="获取企鹅昵称&头像",
     description="一个获取企鹅昵称&头像的API",
