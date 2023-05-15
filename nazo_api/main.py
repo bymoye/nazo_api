@@ -83,7 +83,7 @@ async def after_start(app: Application) -> None:
 # 生命周期：停止时
 @app.on_stop
 async def on_stop(app: Application) -> None:
-    await app.service_provider[SelfSqlite].close()
+    app.service_provider[SelfSqlite].close()
 
 
 if __name__ == "__main__":

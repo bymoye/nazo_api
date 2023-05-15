@@ -7,17 +7,18 @@ from typing import Optional, Union
 
 class SelfSqlite:
     def __init__(self) -> None:
-        self.con = sqlite3.connect(":memory:")
+        # self.con = sqlite3.connect(":memory:")
+        self.con = sqlite3.connect("backup_db.db")
         self.con.row_factory = sqlite3.Row
-        if os.path.exists("backup_db.db"):
-            with sqlite3.connect("backup_db.db") as db:
-                db.backup(self.con)
+        # if os.path.exists("backup_db.db"):
+        #     with sqlite3.connect("backup_db.db") as db:
+        #         db.backup(self.con)
         self.create_ip_table()
         self.create_qq_table()
 
     def close(self) -> None:
-        with sqlite3.connect("backup_db.db") as db:
-            self.con.backup(db)
+        # with sqlite3.connect("backup_db.db") as db:
+        #     self.con.backup(db)
         self.con.close()
 
     def create_ip_table(self) -> None:

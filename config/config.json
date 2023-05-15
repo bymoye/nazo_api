@@ -1,0 +1,24 @@
+{
+	"applications": {
+		"blacksheep": {
+			"type": "python 3",
+			"processes": 4,
+			"protocol": "asgi",
+			"path": "/www/",
+			"working_directory": "/www/",
+			"module": "main",
+			"callable": "app"
+		}
+	},
+
+	"listeners": {
+		"*:8000": {
+			"pass": "applications/blacksheep"
+		}
+	},
+
+	"access_log": {
+        "path": "/var/log/access.log",
+        "format": "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\""
+    }
+}
