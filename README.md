@@ -6,28 +6,27 @@
 
 开发环境为 `Python 3.11`
 
-请先将目录下的 `.env.example` 重命名为 `.env` 并修改其中的配置
+请先将应用目录`(nazo_api)`的 `.env.example` 重命名为 `.env` 并修改其中的配置
 
 本程序需要 GeoIP 库(本库不提供下载)
 
-请自行到 [Maxmind](https://www.maxmind.com/en/accounts/) 下载 `GeoLite2-City.mmdb` 并放到 `src` 目录中
-
-需要安装 `libmaxminddb`
-
-```shell
-dnf install libmaxminddb
-dnf install libmaxminddb-devel
-```
+请自行到 [Maxmind](https://www.maxmind.com/en/accounts/) 下载 `GeoLite2-City.mmdb` 并放到 `nazo_api/src` 目录中
 
 本程序需要 ip2asn 库(本库不提供下载)
 
 请自行到 [iptoasn](https://iptoasn.com/) 下载 `ip2asn-v4.tsv`和`ip2asn-v6.tsv` 并放到 `src` 目录中
 
+使用 `Dockerfile` 进行安装使用
+
+`./build.sh` 中为构建指令
+
+`./start.sh` 中为运行指令
+
 图片请使用 [nazo_image_utils](https://github.com/bymoye/nazo_image_utils) 生成
 
 一言库使用 [sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle)
 
-# 建议
+## 废案~~建议~~
 
 虽然可以直接使用 `uvicorn`，但是还是建议使用 [nginx-unit](https://unit.nginx.org/installation/)
 
