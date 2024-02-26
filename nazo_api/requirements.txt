@@ -2,7 +2,7 @@ blacksheep==1.2.14
 uvicorn==0.22.0
 geoip2==4.7.0
 essentials_openapi==1.0.7
-orjson==3.8.12
+orjson==3.9.15
 webp-support==0.2.7
 nazo-rand==0.0.9
 nazo-image-utils==0.0.3
