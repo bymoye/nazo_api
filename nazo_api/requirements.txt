@@ -8,6 +8,6 @@ nazo-rand==0.0.9
 nazo-image-utils==0.0.3
 nazo-ip2asn==0.0.2
 ujson==5.7.0
-tqdm==4.65.0
+tqdm==4.66.3
 python-dotenv==1.0.0
 httpx==0.24.0
