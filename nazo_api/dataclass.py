@@ -13,13 +13,6 @@ class IPDataClass:
 
 
 @dataclass
-class QQDataClass:
-    qq_number: str
-    qq_name: str
-    qq_avatar: str
-
-
-@dataclass
 class IpResult:
     ip: Optional[str] = None
     data: Optional[IPDataClass] = None

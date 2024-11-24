@@ -1,11 +1,9 @@
-import orjson
-from blacksheep import Content, FromQuery
+from blacksheep import FromQuery
 from blacksheep.messages import Request, Response
 from blacksheep.server.bindings import ServerInfo, FromServices, FromHeader, FromRoute
 from blacksheep.server.routing import Router
 from blacksheep.server.responses import redirect, bad_request
 from modules.ip_todo import IpUtils
-from modules.qq_todo import QQUtils
 from modules.yiyan_todo import Hitokoto
 from nazo_image_utils import RandImage
 from dataclass import UADataClass, IpResult
@@ -15,7 +13,6 @@ from app.docs import (
     docs,
     randimg_docs,
     yiyan_docs,
-    qq_docs,
 )
 from app.jsonres import json, pretty_json
 
@@ -43,12 +40,7 @@ async def get_ip(ipinfo: FromServices[IpUtils], ip: FromRoute[bytes]) -> Respons
     try:
         return json(ipinfo.value.get_ip(ip.value))
     except Exception as e:
-        return Response(
-            status=500,
-            content=Content(
-                b"application/json", orjson.dumps({"status": 500, "error": f"{e}"})
-            ),
-        )
+        return json({"status": 500, "error": f"{e}"}, status=500)
 
 
 @docs(ua_docs)
@@ -66,19 +58,6 @@ async def get_ua(
     except ValueError:
         _ipinfo = IpResult()
     return json(UADataClass(_ip, header, _ipinfo.data))
-
-
-@docs(qq_docs)
-@get("/qq/{str:qqnum}")
-async def get_qq(qqnum: FromRoute[str], qq_utils: FromServices[QQUtils]) -> Response:
-    if (
-        (not qqnum.value.isdigit())
-        or (qqnum.value.startswith("0"))
-        or not (5 < len(qqnum.value) < 11)
-    ):
-        return bad_request("qq号码错误")
-    status, result = await qq_utils.value.get_qqinfo(qqnum.value)
-    return json(result) if status else bad_request(result)
 
 
 class FromUserAgent(FromHeader[bytes]):

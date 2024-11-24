@@ -3,7 +3,7 @@ from typing import List
 from blacksheep.server.openapi.docstrings import GoogleDocDialect
 from blacksheep.server.openapi.v3 import OpenAPIHandler
 from openapidocs.v3 import Contact, Info, Parameter
-from dataclass import UADataClass, IpResult, QQDataClass, RandImgDataClass, IPDataClass
+from dataclass import UADataClass, IpResult, RandImgDataClass, IPDataClass
 from blacksheep.server.openapi.ui import ReDocUIProvider
 from blacksheep.server.openapi.common import (
     ContentInfo,
@@ -28,7 +28,9 @@ ip_docs = EndpointDocs(
     summary="获取IP信息(定位)",
     description="""### 一个获取IP信息的API,支持IP4和IP6,主要为GEOIP""",
     parameters={
-        "ip": ParameterInfo(example="8.8.8.8", description="此处输入ip地址(ipv4 | ipv6)")
+        "ip": ParameterInfo(
+            example="8.8.8.8", description="此处输入ip地址(ipv4 | ipv6)"
+        )
     },
     responses={
         200: ResponseInfo(
@@ -113,7 +115,9 @@ randimg_docs = EndpointDocs(
     description="一个获取随机图的API",
     parameters={
         "encode": ParameterInfo(description="`json`或`留空`"),
-        "number": ParameterInfo(description="需要获取的数量,仅在`encode`为`json`时有效,该值不得大于10"),
+        "number": ParameterInfo(
+            description="需要获取的数量,仅在`encode`为`json`时有效,该值不得大于10"
+        ),
         "platform": ParameterInfo("`pc`或`mobile`"),
     },
     responses={
@@ -190,32 +194,6 @@ yiyan_docs = EndpointDocs(
                                 "created_at": "1468605909",
                                 "length": 28,
                             }
-                        )
-                    ],
-                )
-            ],
-        )
-    },
-)
-
-qq_docs = EndpointDocs(
-    tags=["企鹅"],
-    summary="获取企鹅昵称&头像",
-    description="一个获取企鹅昵称&头像的API",
-    parameters={"qqnum": ParameterInfo("5-10位企鹅号")},
-    responses={
-        200: ResponseInfo(
-            "获取成功",
-            content=[
-                ContentInfo(
-                    type=QQDataClass,
-                    examples=[
-                        ResponseExample(
-                            QQDataClass(
-                                "12345",
-                                "12345",
-                                "http://thirdqq.qlogo.cn/g?b=sdk&k=ffxWIb7R5Rzpia88aM9SNXg&s=640&t=1555323417",
-                            )
                         )
                     ],
                 )

@@ -1,13 +1,12 @@
-blacksheep==1.2.14
-uvicorn==0.22.0
+blacksheep==2.0.7
+uvicorn==0.32.1
 geoip2==4.7.0
 essentials_openapi==1.0.7
-orjson==3.8.12
+msgspec==0.18.6
 webp-support==0.2.7
-nazo-rand==0.0.9
-nazo-image-utils==0.0.3
-nazo-ip2asn==0.0.2
-ujson==5.7.0
+nazo-rand==0.1.0
+nazo-image-utils==0.0.4
+nazo-ip2asn==0.0.3
+# ujson==5.7.0
 tqdm==4.65.0
 python-dotenv==1.0.0
-httpx==0.24.0
