@@ -5,6 +5,8 @@
 			"processes": 4,
 			"protocol": "asgi",
 			"path": "/www/",
+			"user": "root",
+			"group": "root",
 			"working_directory": "/www/",
 			"module": "main",
 			"callable": "app"
@@ -12,8 +14,14 @@
 	},
 
 	"listeners": {
-		"*:8000": {
-			"pass": "applications/blacksheep"
+		"*:80": {
+			"pass": "applications/blacksheep",
+			"forwarded": {
+				"client_ip": "X-Forwarded-For",
+				"source": [
+					"10.100.100.10"
+				]
+			}
 		}
 	},
 

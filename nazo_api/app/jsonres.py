@@ -5,6 +5,8 @@ from msgspec import json as m_json
 
 JSON_RESPONSE = b"application/json"
 
+ENCODER = m_json.Encoder()
+
 
 def json(data: Any, status: int = 200) -> Response:
     """
@@ -14,7 +16,7 @@ def json(data: Any, status: int = 200) -> Response:
     return Response(
         status,
         None,
-        Content(JSON_RESPONSE, m_json.encode(data)),
+        Content(JSON_RESPONSE, ENCODER.encode(data)),
     )
 
 
@@ -31,6 +33,6 @@ def pretty_json(
         None,
         Content(
             JSON_RESPONSE,
-            m_json.format(m_json.encode(data)),
+            m_json.format(ENCODER.encode(data)),
         ),
     )

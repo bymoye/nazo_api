@@ -15,6 +15,7 @@ from app.docs import (
     yiyan_docs,
 )
 from app.jsonres import json, pretty_json
+from time import time_ns
 
 router = Router()
 get = router.get
@@ -86,8 +87,8 @@ async def rand_img(
             }
         )
     return Response(
-        302,
-        [
+        status=302,
+        headers=[
             (
                 b"Location",
                 urls,
@@ -104,3 +105,16 @@ async def yiyan(
     t = list(hitokoto.value.type_set & c.value)
     result = hitokoto.value.get_hitokoto(t)
     return pretty_json(result)
+
+
+@get("/timestamp")
+async def timestamp() -> Response:
+    return Response(
+        status=204,
+        headers=[
+            (
+                b"timestamp",
+                f"{time_ns() // 1000000}".encode(),
+            )
+        ],
+    )

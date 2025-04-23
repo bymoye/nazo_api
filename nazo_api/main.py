@@ -8,9 +8,11 @@ from blacksheep import Content, Request, Response, Application
 
 # from modules.rand import randimg
 from nazo_image_utils import RandImage
-from modules import IpUtils, SelfSqlite, Hitokoto
+from modules import IpUtils, Hitokoto
 from app import docs, router
+from logging import getLogger
 
+logger = getLogger(__name__)
 
 load_dotenv()
 # 初始化
@@ -22,6 +24,19 @@ app.use_cors(
     allow_methods="*",
     allow_origins="*",
     allow_headers="*",
+    expose_headers=frozenset(
+        value.lower()
+        for value in {
+            "Transfer-Encoding",
+            "Content-Encoding",
+            "Vary",
+            "Request-Context",
+            "Set-Cookie",
+            "Server",
+            "Date",
+            "Timestamp",
+        }
+    ),
     max_age=2592000,
 )
 
@@ -43,7 +58,6 @@ app.handle_internal_server_error = handler_error
 @app.on_start
 async def before_start(app: Application) -> None:
     container = t.cast(Container, app.services)
-    container.add_instance(instance=SelfSqlite(), declared_class=None)
     container.add_instance(
         instance=IpUtils(
             os.getenv("GEOLITE2_CITY_PATH", "./src/GeoLite2-City.mmdb"),
@@ -73,7 +87,6 @@ async def after_start(app: Application) -> None:
 @app.on_stop
 async def on_stop(app: Application) -> None:
     container = t.cast(Container, app.services)
-    container.provider.get(SelfSqlite).close()
 
 
 if __name__ == "__main__":

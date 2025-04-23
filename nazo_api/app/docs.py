@@ -1,14 +1,10 @@
-import enum
-from typing import List
-from blacksheep.server.openapi.docstrings import GoogleDocDialect
 from blacksheep.server.openapi.v3 import OpenAPIHandler
-from openapidocs.v3 import Contact, Info, Parameter
+from openapidocs.v3 import Contact, Info
 from dataclass import UADataClass, IpResult, RandImgDataClass, IPDataClass
 from blacksheep.server.openapi.ui import ReDocUIProvider
 from blacksheep.server.openapi.common import (
     ContentInfo,
     EndpointDocs,
-    ParameterExample,
     ParameterInfo,
     ResponseExample,
     ResponseInfo,
@@ -17,7 +13,7 @@ from blacksheep.server.openapi.common import (
 docs = OpenAPIHandler(
     ui_path="/docs/test",
     info=Info(
-        title="nmx API",
+        title="nazo API",
         version="0.3.0",
         contact=Contact("迷与谜&bymoye", "https://www.nazo.run", "s3moye@gmail.com"),
     ),

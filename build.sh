@@ -1,1 +1,1 @@
-docker build --tag=nazo_api .
+podman build --tag=nazo_api .
