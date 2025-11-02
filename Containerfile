@@ -1,4 +1,4 @@
-FROM unit:1.34.1-python3.13
+FROM unit:1.34.2-python3.13
 
 COPY ./nazo_api/requirements.txt /config/requirements.txt
 

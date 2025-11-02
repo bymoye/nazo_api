@@ -52,8 +52,9 @@ async def get_ua(
     ipinfo: FromServices[IpUtils],
 ) -> Response:
     header = {i.decode(): j.decode() for i, j in request.headers}
-    request.get_first_header(b"x-real-ip")
-    _ip = header.get("x-real-ip", ip.value[0])
+    # request.get_first_header(b"x-real-ip")
+    # _ip = header.get("x-real-ip", ip.value[0])
+    _ip = header.get("x-user-ip", header.get("x-real-ip", ip.value[0]))
     try:
         _ipinfo = ipinfo.value.get_ip(_ip.encode())
     except ValueError:
